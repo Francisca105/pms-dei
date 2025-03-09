@@ -8,7 +8,6 @@
     </v-col>
   </v-row>
 
-
   <v-text-field
     v-model="search"
     label="Search"
@@ -32,23 +31,17 @@
       <v-chip v-if="item.type === 'COORDINATOR'" color="purple" text-color="white">
         Coordenador
       </v-chip>
-      <v-chip v-else-if="item.type === 'STAFF'" color="red" text-color="white">
-        Staff
-      </v-chip>
+      <v-chip v-else-if="item.type === 'STAFF'" color="red" text-color="white"> Staff </v-chip>
       <v-chip v-else-if="item.type === 'TEACHER'" color="blue" text-color="white">
         Professor
       </v-chip>
-      <v-chip v-else color="green" text-color="white">
-        Aluno
-      </v-chip>
+      <v-chip v-else color="green" text-color="white"> Aluno </v-chip>
     </template>
     <template v-slot:[`item.actions`]="{ item }">
       <v-icon @click="editPerson(item)" class="mr-2">mdi-pencil</v-icon>
       <v-icon @click="deletePerson(item)">mdi-delete</v-icon>
     </template>
-
   </v-data-table>
-
 </template>
 
 <script setup lang="ts">
@@ -72,6 +65,13 @@ const headers = [
     title: 'IST ID',
     key: 'istId',
     value: 'istId',
+    sortable: true,
+    filterable: true
+  },
+  {
+    title: 'Email',
+    key: 'email',
+    value: 'email',
     sortable: true,
     filterable: true
   },
@@ -110,11 +110,9 @@ const deletePerson = (person: PeopleDto) => {
   console.log('Deleting person:', person)
 }
 
-
 const fuzzySearch = (value: string, search: string) => {
   // Regex to match any character in between the search characters
   let searchRegex = new RegExp(search.split('').join('.*'), 'i')
   return searchRegex.test(value)
 }
-
 </script>

@@ -36,17 +36,26 @@ public class PersonService {
 		return new PersonDto(personRepository.save(person));
 	}
 
-	@Transactional
-	public PersonDto createPerson(PersonDto personDto) {
+	
+	private void checkPersonDto(PersonDto personDto) {
 		if (personDto.getName() == null) {
 			throw new DEIException(ErrorMessage.PERSON_NAME_NOT_VALID);
 		}
 		if (personDto.getIstId() == null) {
 			throw new DEIException(ErrorMessage.PERSON_ISTID_NOT_VALID);
 		}
+		if (personDto.getEmail() == null || !personDto.getEmail().matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
+			throw new DEIException(ErrorMessage.PERSON_EMAIL_NOT_VALID);
+		}
 		if (personDto.getType() == null) {
 			throw new DEIException(ErrorMessage.PERSON_TYPE_NOT_VALID);
 		}
+	}
+
+	@Transactional
+	public PersonDto createPerson(PersonDto personDto) {
+		checkPersonDto(personDto); // ensure valid
+
 		if (personRepository.existsById(personDto.getId())) {
 			throw new DEIException(ErrorMessage.PERSON_ALREADY_EXISTS, Long.toString(personDto.getId()));
 		}
@@ -62,6 +71,7 @@ public class PersonService {
 	@Transactional
 	public PersonDto updatePerson(long id, PersonDto personDto) {
 		fetchPersonOrThrow(id); // ensure exists
+		checkPersonDto(personDto); // ensure valid
 
 		return savePersonDto(id, personDto);
 	}

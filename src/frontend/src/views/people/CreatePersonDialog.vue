@@ -15,13 +15,14 @@
         <v-card-text>
           <v-text-field label="Nome*" required v-model="newPerson.name"></v-text-field>
           <v-text-field label="IST ID*" required v-model="newPerson.istId"></v-text-field>
+          <v-text-field label="Email*" required v-model="newPerson.email"></v-text-field>
 
-            <v-select
+          <v-select
             :items="['Coordenador', 'Staff', 'Aluno', 'Professor', 'SC']"
             label="Categoria*"
             required
             v-model="newPerson.type"
-            ></v-select>
+          ></v-select>
         </v-card-text>
 
         <v-divider></v-divider>
@@ -35,10 +36,7 @@
             color="primary"
             text="Save"
             variant="tonal"
-            @click="
-              dialog = false,
-              savePerson()
-            "
+            @click="((dialog = false), savePerson())"
           ></v-btn>
         </v-card-actions>
       </v-card>
