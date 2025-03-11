@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.rnl.dei.dms.person.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,10 @@ import pt.ulisboa.tecnico.rnl.dei.dms.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.rnl.dei.dms.person.domain.Person;
 import pt.ulisboa.tecnico.rnl.dei.dms.person.dto.PersonDto;
 import pt.ulisboa.tecnico.rnl.dei.dms.person.repository.PersonRepository;
+import pt.ulisboa.tecnico.rnl.dei.dms.logs.domain.Logs.LogType;
+import pt.ulisboa.tecnico.rnl.dei.dms.logs.dto.LogsDto;
+import pt.ulisboa.tecnico.rnl.dei.dms.logs.service.LogsService;
+
 @Service
 @Transactional
 public class PersonService {
@@ -18,9 +23,15 @@ public class PersonService {
 	@Autowired
 	private PersonRepository personRepository;
 
+	@Autowired
+    private LogsService logsService;
+
 	private Person fetchPersonOrThrow(long id) {
 		return personRepository.findById(id)
-				.orElseThrow(() -> new DEIException(ErrorMessage.NO_SUCH_PERSON, Long.toString(id)));
+				.orElseThrow(() -> {
+					logError("Tried to fetch person with non-existent ID: " + id);
+					return new DEIException(ErrorMessage.NO_SUCH_PERSON, Long.toString(id));
+				});
 	}
 
 	@Transactional
@@ -39,15 +50,19 @@ public class PersonService {
 	
 	private void checkPersonDto(PersonDto personDto) {
 		if (personDto.getName() == null) {
+			logError("Tried to create or update person with null name");
 			throw new DEIException(ErrorMessage.PERSON_NAME_NOT_VALID);
 		}
 		if (personDto.getIstId() == null) {
+			logError("Tried to create or update person with null IST ID");
 			throw new DEIException(ErrorMessage.PERSON_ISTID_NOT_VALID);
 		}
 		if (personDto.getEmail() == null || !personDto.getEmail().matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
+			logError("Tried to create or update person with invalid email");
 			throw new DEIException(ErrorMessage.PERSON_EMAIL_NOT_VALID);
 		}
 		if (personDto.getType() == null) {
+			logError("Tried to create or update person with null type");
 			throw new DEIException(ErrorMessage.PERSON_TYPE_NOT_VALID);
 		}
 	}
@@ -59,6 +74,11 @@ public class PersonService {
 		if (personRepository.existsById(personDto.getId())) {
 			throw new DEIException(ErrorMessage.PERSON_ALREADY_EXISTS, Long.toString(personDto.getId()));
 		}
+
+		logsService.createLog(new LogsDto(
+                LogType.INFO,
+                "Created person with IST ID: " + personDto.getIstId()
+        ));
 
 		return savePersonDto(null, personDto);
 	}
@@ -73,6 +93,11 @@ public class PersonService {
 		fetchPersonOrThrow(id); // ensure exists
 		checkPersonDto(personDto); // ensure valid
 
+		logsService.createLog(new LogsDto(
+				LogType.INFO,
+				"Updated person with IST ID: " + personDto.getIstId()
+		));
+
 		return savePersonDto(id, personDto);
 	}
 
@@ -80,6 +105,16 @@ public class PersonService {
 	public void deletePerson(long id) {
 		fetchPersonOrThrow(id); // ensure exists
 
+		logsService.createLog(new LogsDto(
+				LogType.INFO,
+				"Deleted person with ID: " + id
+		));
+
 		personRepository.deleteById(id);
+	}
+
+	private void logError(String message) {
+		LogsDto log = new LogsDto(LogType.ERROR, message);
+		logsService.createLog(log);
 	}
 }
