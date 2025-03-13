@@ -18,14 +18,7 @@
       <v-col cols="12">
         <h2 class="text-h5 mb-4">Thesis Progress</h2>
         <v-row>
-          <v-col
-            v-for="(count, step) in thesisProgress"
-            :key="step"
-            cols="12"
-            sm="6"
-            md="4"
-            lg="3"
-          >
+          <v-col v-for="(count, step) in thesisProgress" :key="step" cols="12" sm="6" md="4" lg="3">
             <v-card class="stat-card">
               <v-card-text class="text-center">
                 <h3 class="text-h6">{{ step }}</h3>
@@ -79,8 +72,8 @@ const thesisProgress = ref({
 
 // Mock data for defense progress
 const defenseProgress = ref({
-  'Scheduled': 4,
-  'Completed': 3,
+  Scheduled: 4,
+  Completed: 3,
   'Pending Review': 2
 })
 </script>

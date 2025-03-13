@@ -42,6 +42,11 @@ const router = createRouter({
       path: '/403',
       name: 'forbidden',
       component: () => import('@/views/errors/Error403.vue')
+    },
+    {
+      path: '/:pathMatch(.*)*', // Wildcard
+      name: 'not-found',
+      component: () => import('@/views/errors/Error404.vue')
     }
   ]
 })

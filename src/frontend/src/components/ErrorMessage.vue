@@ -7,18 +7,18 @@
 </template>
 
 <script setup lang="ts">
-import { useAppearanceStore } from '@/stores/appearance';
-import { ref, watch, watchEffect } from 'vue';
+import { useAppearanceStore } from '@/stores/appearance'
+import { ref, watch, watchEffect } from 'vue'
 
 const appearanceStore = useAppearanceStore()
 
-const show = ref(true);
-watchEffect(() => (show.value = !appearanceStore.isStackEmpty));
+const show = ref(true)
+watchEffect(() => (show.value = !appearanceStore.isStackEmpty))
 watch(show, (value) => {
   if (!value) {
-    appearanceStore.popError();
+    appearanceStore.popError()
   }
-});
+})
 </script>
 
 <style scoped lang="scss">
