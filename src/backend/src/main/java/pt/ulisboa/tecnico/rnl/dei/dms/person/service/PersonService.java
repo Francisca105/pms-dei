@@ -41,6 +41,13 @@ public class PersonService {
 				.toList();
 	}
 
+	@Transactional
+	public List<PersonDto> getStudents() {
+		return personRepository.findAllByType(Person.PersonType.STUDENT).stream()
+				.map(PersonDto::new)
+				.toList();
+	}
+
 	private PersonDto savePersonDto(Long id, PersonDto personDto) {
 		Person person = new Person(personDto);
 		person.setId(id);

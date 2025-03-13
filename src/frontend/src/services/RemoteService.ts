@@ -14,8 +14,20 @@ export default class RemoteServices {
     return httpClient.get('/people')
   }
 
+  static async getStudents(): Promise<PersonDto[]> {
+    return httpClient.get('/students')
+  }
+
   static async createPerson(person: PersonDto): Promise<PersonDto> {
     return httpClient.post('/people', person)
+  }
+
+  static async updatePerson(person: PersonDto): Promise<PersonDto> {
+    return httpClient.put(`/people/${person.id}`, person)
+  }
+
+  static async deletePerson(id: number): Promise<AxiosResponse<void>> {
+    return httpClient.delete(`/people/${id}`)
   }
 
   static async errorMessage(error: any): Promise<string> {
