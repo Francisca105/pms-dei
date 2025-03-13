@@ -44,7 +44,6 @@
 import type PeopleDto from '@/models/PeopleDto'
 import RemoteService from '@/services/RemoteService'
 import { reactive, ref } from 'vue'
-import DeletePersonDialog from './DeletePersonDialog.vue'
 
 let search = ref('')
 let loading = ref(true)

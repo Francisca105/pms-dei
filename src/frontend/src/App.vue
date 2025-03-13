@@ -17,27 +17,25 @@
 
 <script setup lang="ts">
 import TopBar from '@/components/TopBar.vue'
-import ErrorMessage from '@/components/ErrorMessage.vue';
-import LoadingOverlay from '@/components/LoadingOverlay.vue';
-
+import ErrorMessage from '@/components/ErrorMessage.vue'
+import LoadingOverlay from '@/components/LoadingOverlay.vue'
 
 import { RouterLink, RouterView } from 'vue-router'
 
-import { useAppearanceStore } from './stores/appearance';
-import { onMounted, onUnmounted } from 'vue';
+import { useAppearanceStore } from './stores/appearance'
+import { onMounted, onUnmounted } from 'vue'
 
-const appearanceStore = useAppearanceStore();
+const appearanceStore = useAppearanceStore()
 
-const setWidth = () => (appearanceStore.windowWidth = window.innerWidth);
-setWidth();
+const setWidth = () => (appearanceStore.windowWidth = window.innerWidth)
+setWidth()
 onMounted(() => {
-  window.addEventListener('resize', setWidth);
-  appearanceStore.clearErrors();
-
-});
+  window.addEventListener('resize', setWidth)
+  appearanceStore.clearErrors()
+})
 onUnmounted(() => {
-  window.removeEventListener('resize', setWidth);
-});
+  window.removeEventListener('resize', setWidth)
+})
 </script>
 
 <style scoped>
