@@ -35,6 +35,7 @@
       <v-chip v-else-if="item.type === 'TEACHER'" color="blue" text-color="white">
         Professor
       </v-chip>
+      <v-chip v-else-if="item.type === 'SC'" color="orange" text-color="white"> SC </v-chip>
       <v-chip v-else color="green" text-color="white"> Aluno </v-chip>
     </template>
     <template v-slot:[`item.actions`]="{ item }">
