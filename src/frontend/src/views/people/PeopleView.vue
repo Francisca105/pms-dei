@@ -39,9 +39,16 @@
     </template>
     <template v-slot:[`item.actions`]="{ item }">
       <v-icon @click="editPerson(item)" class="mr-2">mdi-pencil</v-icon>
-      <v-icon @click="deletePerson(item)">mdi-delete</v-icon>
+      <!-- <v-icon @click="deletePerson(item)">mdi-delete</v-icon> -->
     </template>
   </v-data-table>
+
+  <EditPersonDialog
+    v-if="editDialog"
+    :person="selectedPerson"
+    @person-edited="updatePersonInList"
+    @close-dialog="closeEditDialog"
+  />
 </template>
 
 <script setup lang="ts">
@@ -49,9 +56,13 @@ import type PeopleDto from '@/models/PeopleDto'
 import RemoteService from '@/services/RemoteService'
 import CreatePersonDialog from './CreatePersonDialog.vue'
 import { reactive, ref } from 'vue'
+import EditPersonDialog from './EditPersonDialog.vue'
 
 let search = ref('')
 let loading = ref(true)
+let editDialog = ref(false)
+let deleteDialog = ref(false)
+
 const headers = [
   { title: 'ID', key: 'id', value: 'id', sortable: true, filterable: false },
   {
@@ -92,26 +103,36 @@ const headers = [
   // TODO: maybe add another column with possible actions? (edit / delete)
 ]
 
-const people: PeopleDto[] = reactive([])
+const selectedPerson = ref<PeopleDto | null>(null)
+let people: PeopleDto[] = reactive([])
 
 getPeople()
 async function getPeople() {
   people.splice(0, people.length)
   people.push(...(await RemoteService.getPeople()))
   loading.value = false
-  console.log(people)
 }
 
 const editPerson = (person: PeopleDto) => {
-  console.log('Editing person:', person)
+  selectedPerson.value = { ...person }
+  editDialog.value = true
 }
 
-const deletePerson = (person: PeopleDto) => {
-  console.log('Deleting person:', person)
+const updatePersonInList = (updatedPerson: PeopleDto) => {
+  const index = people.findIndex((person) => person.id === updatedPerson.id)
+  if (index !== -1) {
+    people[index] = { ...updatedPerson }
+  }
+  editDialog.value = false
+}
+
+const closeEditDialog = () => {
+  editDialog.value = false
 }
 
 const fuzzySearch = (value: string, search: string) => {
   // Regex to match any character in between the search characters
+  if (!value) return false
   let searchRegex = new RegExp(search.split('').join('.*'), 'i')
   return searchRegex.test(value)
 }
