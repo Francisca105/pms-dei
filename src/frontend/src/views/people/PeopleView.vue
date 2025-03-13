@@ -39,15 +39,22 @@
     </template>
     <template v-slot:[`item.actions`]="{ item }">
       <v-icon @click="editPerson(item)" class="mr-2">mdi-pencil</v-icon>
-      <!-- <v-icon @click="deletePerson(item)">mdi-delete</v-icon> -->
+      <v-icon @click="deletePerson(item)">mdi-delete</v-icon>
     </template>
   </v-data-table>
 
   <EditPersonDialog
     v-if="editDialog"
-    :person="selectedPerson"
+    :person="toEditPerson"
     @person-edited="updatePersonInList"
-    @close-dialog="closeEditDialog"
+    @close-edit-dialog="closeEditDialog"
+  />
+
+  <DeletePersonDialog
+    v-if="deleteDialog"
+    :person="toDeletePerson"
+    @person-deleted="deletePersonInList"
+    @close-delete-dialog="closeDeleteDialog"
   />
 </template>
 
@@ -57,6 +64,7 @@ import RemoteService from '@/services/RemoteService'
 import CreatePersonDialog from './CreatePersonDialog.vue'
 import { reactive, ref } from 'vue'
 import EditPersonDialog from './EditPersonDialog.vue'
+import DeletePersonDialog from './DeletePersonDialog.vue'
 
 let search = ref('')
 let loading = ref(true)
@@ -103,7 +111,8 @@ const headers = [
   // TODO: maybe add another column with possible actions? (edit / delete)
 ]
 
-const selectedPerson = ref<PeopleDto | null>(null)
+const toEditPerson = ref<PeopleDto | null>(null)
+const toDeletePerson = ref<PeopleDto | null>(null)
 let people: PeopleDto[] = reactive([])
 
 getPeople()
@@ -114,8 +123,12 @@ async function getPeople() {
 }
 
 const editPerson = (person: PeopleDto) => {
-  selectedPerson.value = { ...person }
+  toEditPerson.value = { ...person }
   editDialog.value = true
+}
+
+const closeEditDialog = () => {
+  editDialog.value = false
 }
 
 const updatePersonInList = (updatedPerson: PeopleDto) => {
@@ -126,8 +139,21 @@ const updatePersonInList = (updatedPerson: PeopleDto) => {
   editDialog.value = false
 }
 
-const closeEditDialog = () => {
-  editDialog.value = false
+const deletePerson = (person: PeopleDto) => {
+  toDeletePerson.value = { ...person }
+  deleteDialog.value = true
+}
+
+const closeDeleteDialog = () => {
+  deleteDialog.value = false
+}
+
+const deletePersonInList = (deletedPerson: PeopleDto) => {
+  const index = people.findIndex((person) => person.id === deletedPerson.id)
+  if (index !== -1) {
+    people.splice(index, 1)
+  }
+  deleteDialog.value = false
 }
 
 const fuzzySearch = (value: string, search: string) => {
