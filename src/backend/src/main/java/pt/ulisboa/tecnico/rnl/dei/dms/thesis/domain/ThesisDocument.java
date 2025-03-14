@@ -1,5 +1,10 @@
 package pt.ulisboa.tecnico.rnl.dei.dms.thesis.domain;
+import java.time.LocalDate;
+
 import jakarta.persistence.*;
+import pt.ulisboa.tecnico.rnl.dei.dms.exceptions.DEIException;
+import pt.ulisboa.tecnico.rnl.dei.dms.exceptions.ErrorMessage;
+import pt.ulisboa.tecnico.rnl.dei.dms.thesis.dto.ThesisDocumentDto;
 
 @Entity
 @Table(name = "thesis_signed_documents")
@@ -8,16 +13,18 @@ public class ThesisDocument {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String name;
+
     @Lob
     private byte[] content;
 
-    private String name;
+    private LocalDate uploadDate;
 
     @OneToOne
     @JoinColumn(name = "thesis_workflow_id")
     private ThesisWorkflow thesisWorkflow;
 
-    protected ThesisDocument() {}
+    public ThesisDocument() {}
 
     public ThesisDocument(byte[] content, String name, ThesisWorkflow workflow) {
         this.content = content;
@@ -25,28 +32,30 @@ public class ThesisDocument {
         this.thesisWorkflow = workflow;
     }
 
-    public byte[] getContent() { 
-        return content; 
+    public ThesisDocument(ThesisDocumentDto thesisDocumentDto) {
+        this(thesisDocumentDto.getContent(), thesisDocumentDto.getName(), null);
     }
 
     public void setContent(byte[] content) { 
+        if(content == null) {
+            throw new DEIException(ErrorMessage.THESIS_DOCUMENT_INVALID);
+        }
         this.content = content; 
     }
 
-    public String getName() { 
-        return name; 
+    public void setUploadDate(LocalDate uploadDate) { 
+        if(uploadDate == null) {
+            throw new DEIException(ErrorMessage.THESIS_DOCUMENT_INVALID_DATE);
+        }
+        this.uploadDate = uploadDate; 
     }
 
-    public void setName(String name) { 
-        this.name = name; 
-    }
-
-    public ThesisWorkflow getThesisWorkflow() {
-        return thesisWorkflow; 
-    }
-
-    public void setThesisWorkflow(ThesisWorkflow thesisWorkflow) { 
-        this.thesisWorkflow = thesisWorkflow; 
-    }   
-   
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public byte[] getContent() { return content; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public ThesisWorkflow getThesisWorkflow() { return thesisWorkflow; }
+    public void setThesisWorkflow(ThesisWorkflow thesisWorkflow) { this.thesisWorkflow = thesisWorkflow; }   
+    public LocalDate getUploadDate() { return uploadDate; }
 }
