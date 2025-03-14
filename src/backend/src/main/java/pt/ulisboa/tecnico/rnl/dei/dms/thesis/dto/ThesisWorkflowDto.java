@@ -1,13 +1,15 @@
 package pt.ulisboa.tecnico.rnl.dei.dms.thesis.dto;
 
 import pt.ulisboa.tecnico.rnl.dei.dms.person.dto.PersonDto;
+import pt.ulisboa.tecnico.rnl.dei.dms.thesis.domain.ThesisWorkflow;
+import pt.ulisboa.tecnico.rnl.dei.dms.thesis.domain.ThesisWorkflow.ThesisState;
 
 import java.util.List;
 
 public class ThesisWorkflowDto {
     private Long id;
     private PersonDto student;
-    private String state;
+    private ThesisState state;
     private List<PersonDto> jury;
     private PersonDto president;
     private ThesisDocumentDto signedDocument;
@@ -15,7 +17,16 @@ public class ThesisWorkflowDto {
     public ThesisWorkflowDto() {
     }
 
-    public ThesisWorkflowDto(Long id, PersonDto student, String state, List<PersonDto> jury, PersonDto president, ThesisDocumentDto signedDocument) {
+    public ThesisWorkflowDto(ThesisWorkflow thesisWorkflow) {
+        this.id = thesisWorkflow.getId();
+        this.student = new PersonDto(thesisWorkflow.getStudent());
+        this.state = thesisWorkflow.getState();
+        this.jury = thesisWorkflow.getJury().stream().map(PersonDto::new).toList();
+        this.president = thesisWorkflow.getPresident() != null ? new PersonDto(thesisWorkflow.getPresident()) : null;
+        this.signedDocument = thesisWorkflow.getSignedDocument() != null ? new ThesisDocumentDto(thesisWorkflow.getSignedDocument()) : null;
+    }
+
+    public ThesisWorkflowDto(Long id, PersonDto student, ThesisState state, List<PersonDto> jury, PersonDto president, ThesisDocumentDto signedDocument) {
         this.id = id;
         this.student = student;
         this.state = state;
@@ -40,11 +51,11 @@ public class ThesisWorkflowDto {
         this.student = student;
     }
 
-    public String getState() {
+    public ThesisState getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(ThesisState state) {
         this.state = state;
     }
 
