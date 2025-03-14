@@ -1,6 +1,10 @@
 package pt.ulisboa.tecnico.rnl.dei.dms.exceptions;
 
 public enum ErrorMessage {
+	THESIS_NOT_FOUND("Não existe nenhuma tese com o ID %s", 2002),
+	THESIS_NAME_NOT_VALID("O nome da tese especificado não é válido.", 2003),
+	THESIS_STATUS_NOT_VALID("O estado da tese especificado não é válido.", 2004),
+	THESIS_ALREADY_EXISTS("Já existe uma tese com o ID %s", 2005),
 
 	NO_SUCH_PERSON("Não existe nenhuma pessoa com o ID %s", 1001),
 	PERSON_NAME_NOT_VALID("O nome da pessoa especificado não é válido.", 1002),
