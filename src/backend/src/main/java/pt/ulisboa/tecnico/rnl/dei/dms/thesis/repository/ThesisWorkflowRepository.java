@@ -8,6 +8,6 @@ import pt.ulisboa.tecnico.rnl.dei.dms.thesis.domain.ThesisWorkflow;
 
 @Repository
 @Transactional
-public interface ThesisRepository extends JpaRepository<ThesisWorkflow, Long> {
+public interface ThesisWorkflowRepository extends JpaRepository<ThesisWorkflow, Long> {
     
 }
