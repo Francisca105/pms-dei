@@ -33,7 +33,9 @@ public class ThesisDocument {
     }
 
     public ThesisDocument(ThesisDocumentDto thesisDocumentDto) {
-        this(thesisDocumentDto.getContent(), thesisDocumentDto.getName(), null);
+        this.content = thesisDocumentDto.getContent();
+        this.name = thesisDocumentDto.getName();
+        this.uploadDate = thesisDocumentDto.getUploadDate();
     }
 
     public void setContent(byte[] content) { 
