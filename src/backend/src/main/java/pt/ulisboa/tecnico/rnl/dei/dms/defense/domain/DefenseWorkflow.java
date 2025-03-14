@@ -79,50 +79,27 @@ public class DefenseWorkflow {
             setGrade(null);
         }
     }
-
-    public Long getId() {
-        return id; 
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public ThesisWorkflow getThesisWorkflow() {
-        return thesisWorkflow;
-    }
-
-    public void setThesisWorkflow(ThesisWorkflow thesisWorkflow) {
-        this.thesisWorkflow = thesisWorkflow;
-    }
-
-    public DefenseState getState() {
-        return state;
-    }
-
-    public void setState(DefenseState state) {
-        this.state = state;
-    }
-
-    public LocalDate getScheduledDate() {
-        return scheduledDate;
-    }
-
+    
     public void setScheduledDate(LocalDate scheduledDate) {
         if (scheduledDate != null && scheduledDate.isBefore(LocalDate.now())) {
             throw new DEIException(ErrorMessage.DEFENSE_SCHEDULE_PASS_DATE);
         }
         this.scheduledDate = scheduledDate;
     }
-
-    public Double getGrade() {
-        return grade;
-    }
-
+  
     public void setGrade(Double grade) {
         if (grade != null && (grade < 0 || grade > 20)) {
             throw new DEIException(ErrorMessage.DEFENSE_GRADE_INVALID);
         }
         this.grade = grade;
     }
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public ThesisWorkflow getThesisWorkflow() { return thesisWorkflow; }
+    public void setThesisWorkflow(ThesisWorkflow thesisWorkflow) { this.thesisWorkflow = thesisWorkflow; }
+    public DefenseState getState() { return state; }
+    public void setState(DefenseState state) { this.state = state; }
+    public LocalDate getScheduledDate() { return scheduledDate; }
+    public Double getGrade() { return grade; }
 }
