@@ -1,49 +1,58 @@
 <template>
-  <v-row align="center">
-    <v-col>
-      <h2 class="text-left ml-1">Listagem de Estudantes</h2>
-    </v-col>
-    <v-col cols="auto">
-      <CreatePersonDialog @person-created="getPeople" />
-    </v-col>
-  </v-row>
+  <div v-if="roleStore.currentRole !== 'student'">
+    <v-row align="center">
+      <v-col>
+        <h2 class="text-left ml-1">Listagem de Estudantes</h2>
+      </v-col>
+      <v-col cols="auto">
+        <CreatePersonDialog @person-created="getPeople" />
+      </v-col>
+    </v-row>
 
-  <v-text-field
-    v-model="search"
-    label="Search"
-    prepend-inner-icon="mdi-magnify"
-    variant="outlined"
-    hide-details
-    single-line
-  ></v-text-field>
+    <v-text-field
+      v-model="search"
+      label="Search"
+      prepend-inner-icon="mdi-magnify"
+      variant="outlined"
+      hide-details
+      single-line
+    ></v-text-field>
 
-  <v-data-table
-    :headers="headers"
-    :items="people"
-    :search="search"
-    :loading="loading"
-    :custom-filter="fuzzySearch"
-    item-key="id"
-    class="text-left"
-    no-data-text="Sem pessoas a apresentar."
-  >
-    <template v-slot:[`item.type`]="{ item }">
-      <v-chip v-if="item.type === 'COORDINATOR'" color="purple" text-color="white">
-        Coordenador
-      </v-chip>
-      <v-chip v-else-if="item.type === 'STAFF'" color="red" text-color="white"> Staff </v-chip>
-      <v-chip v-else-if="item.type === 'TEACHER'" color="blue" text-color="white">
-        Professor
-      </v-chip>
-      <v-chip v-else color="green" text-color="white"> Aluno </v-chip>
-    </template>
-  </v-data-table>
+    <v-data-table
+      :headers="headers"
+      :items="people"
+      :search="search"
+      :loading="loading"
+      :custom-filter="fuzzySearch"
+      item-key="id"
+      class="text-left"
+      no-data-text="Sem pessoas a apresentar."
+    >
+      <template v-slot:[`item.type`]="{ item }">
+        <v-chip v-if="item.type === 'COORDINATOR'" color="purple" text-color="white">
+          Coordenador
+        </v-chip>
+        <v-chip v-else-if="item.type === 'STAFF'" color="red" text-color="white"> Staff </v-chip>
+        <v-chip v-else-if="item.type === 'TEACHER'" color="blue" text-color="white">
+          Professor
+        </v-chip>
+        <v-chip v-else color="green" text-color="white"> Aluno </v-chip>
+      </template>
+    </v-data-table>
+  </div>
+  <div v-else>
+    <Error403 />
+  </div>
 </template>
 
 <script setup lang="ts">
 import type PeopleDto from '@/models/PeopleDto'
 import RemoteService from '@/services/RemoteService'
 import { reactive, ref } from 'vue'
+import { useRoleStore } from '@/stores/role'
+import Error403 from '@/components/errors/Error403.vue'
+
+const roleStore = useRoleStore()
 
 let search = ref('')
 let loading = ref(true)
