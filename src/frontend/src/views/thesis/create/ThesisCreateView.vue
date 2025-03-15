@@ -24,9 +24,7 @@
               </p>
               <br />
               <p>
-                <center>
-                  <b>Nota:</b>
-                </center>
+                <b>Nota:</b><br />
                 Esta implementação foi realizada desta forma devido à falta de um sistema de login.
                 Se um sistema de login fosse implementado, a seleção do estudante não seria
                 necessária, pois o sistema identificaria automaticamente o estudante autenticado.
@@ -157,5 +155,8 @@ const saveThesis = async () => {
 .v-expansion-panels {
   margin-top: 16px;
   margin-bottom: 16px;
+}
+.v-expansion-panel-text {
+  text-align: left;
 }
 </style>
