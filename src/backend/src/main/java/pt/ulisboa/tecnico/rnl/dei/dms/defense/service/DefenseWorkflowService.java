@@ -11,6 +11,7 @@ import pt.ulisboa.tecnico.rnl.dei.dms.thesis.domain.ThesisWorkflow;
 import pt.ulisboa.tecnico.rnl.dei.dms.thesis.service.ThesisWorkflowService;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -72,7 +73,21 @@ public class DefenseWorkflowService {
     }
 
     public Map<DefenseWorkflow.DefenseState, Long> getStatistics() {
-        return defenseWorkflowRepository.getStatistics();
+        DefenseWorkflow.DefenseState[] allStates = DefenseWorkflow.DefenseState.values();
+
+        Map<DefenseWorkflow.DefenseState, Long> statistics = new HashMap<>();
+        for (DefenseWorkflow.DefenseState state : allStates) {
+            statistics.put(state, 0L); 
+        }
+
+        List<Object[]> results = defenseWorkflowRepository.getStatistics();
+        for (Object[] result : results) {
+            DefenseWorkflow.DefenseState state = (DefenseWorkflow.DefenseState) result[0]; 
+            Long count = (Long) result[1]; 
+            statistics.put(state, count); 
+        }
+
+        return statistics;
     }
 
     private DefenseWorkflowDTO convertToDto(DefenseWorkflow defenseWorkflow) {

@@ -18,6 +18,7 @@ import pt.ulisboa.tecnico.rnl.dei.dms.thesis.dto.ThesisWorkflowDto;
 import pt.ulisboa.tecnico.rnl.dei.dms.thesis.repository.ThesisWorkflowRepository;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -114,7 +115,21 @@ public class ThesisWorkflowService {
     }
 
     public Map<ThesisWorkflow.ThesisState, Long> getStatistics() {
-        return thesisWorkflowRepository.getStatistics();
+        ThesisWorkflow.ThesisState[] allStates = ThesisWorkflow.ThesisState.values();
+
+        Map<ThesisWorkflow.ThesisState, Long> statistics = new HashMap<>();
+        for (ThesisWorkflow.ThesisState state : allStates) {
+            statistics.put(state, 0L); 
+        }
+
+        List<Object[]> results = thesisWorkflowRepository.getStatistics();
+        for (Object[] result : results) {
+            ThesisWorkflow.ThesisState state = (ThesisWorkflow.ThesisState) result[0]; 
+            Long count = (Long) result[1]; 
+            statistics.put(state, count); 
+        }
+
+        return statistics;
     }
 
     private ThesisWorkflowDto convertToDto(ThesisWorkflow thesisWorkflow) {
