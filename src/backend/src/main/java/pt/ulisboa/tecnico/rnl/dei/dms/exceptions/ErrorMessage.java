@@ -24,7 +24,7 @@ public enum ErrorMessage {
 	THESIS_JURY_NON_TEACHER_MEMBER("O júri especificado contém membros que não são professores.", 2023),
 	THESIS_DOCUMENT_INVALID_DATE("A data de submissão do documento da tese não é válida.", 2024),
 	THESIS_STATE_CHANGE_BLOCKED("A mudança de estado da tese não é possível.", 2025),
-	NO_SUCH_THESIS_WORKFLOW("Não existe nenhuma tese com o ID %s", 2026),
+	THESIS_USER_ALREADY_HAS_THESIS("O utilizador já tem uma tese associada.", 2028),
 
 
 	DEFENSE_GRADE_SUBMISSION_ERROR("A submissão da nota da defesa não é válida.", 3001),

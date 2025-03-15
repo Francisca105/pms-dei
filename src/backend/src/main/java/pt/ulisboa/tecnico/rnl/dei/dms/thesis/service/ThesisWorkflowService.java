@@ -46,7 +46,7 @@ public class ThesisWorkflowService {
 
     public ThesisWorkflowDto getThesisWorkflowById(Long id) {
         return convertToDto(thesisWorkflowRepository.findById(id)
-                .orElseThrow(() -> new DEIException(ErrorMessage.NO_SUCH_THESIS_WORKFLOW, Long.toString(id))));
+                .orElseThrow(() -> new DEIException(ErrorMessage.THESIS_NOT_FOUND, Long.toString(id))));
     }
 
     public ThesisWorkflowDto getThesisWorkflowByStudentId(Long studentId) {
@@ -61,6 +61,10 @@ public class ThesisWorkflowService {
         Person student = personService.getPersonById(studentId);
         if (student.getType() != Person.PersonType.STUDENT) {
             throw new DEIException(ErrorMessage.THESIS_SUBMISSION_NOT_STUDENT);
+        }
+
+        if(getThesisWorkflowByStudentId(studentId) != null) {
+            throw new DEIException(ErrorMessage.THESIS_USER_ALREADY_HAS_THESIS);
         }
 
         ThesisWorkflow thesisWorkflow = new ThesisWorkflow(student);
@@ -119,7 +123,7 @@ public class ThesisWorkflowService {
 
     public ThesisWorkflow getThesisWorkflowEntity(Long id) {
         return thesisWorkflowRepository.findById(id)
-                .orElseThrow(() -> new DEIException(ErrorMessage.NO_SUCH_THESIS_WORKFLOW, Long.toString(id)));
+                .orElseThrow(() -> new DEIException(ErrorMessage.THESIS_NOT_FOUND, Long.toString(id)));
     }
 
     public Map<ThesisWorkflow.ThesisState, Long> getStatistics() {
