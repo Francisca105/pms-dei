@@ -19,6 +19,7 @@ import pt.ulisboa.tecnico.rnl.dei.dms.thesis.repository.ThesisWorkflowRepository
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -110,6 +111,10 @@ public class ThesisWorkflowService {
     public ThesisWorkflow getThesisWorkflowEntity(Long id) {
         return thesisWorkflowRepository.findById(id)
                 .orElseThrow(() -> new DEIException(ErrorMessage.NO_SUCH_THESIS_WORKFLOW, Long.toString(id)));
+    }
+
+    public Map<ThesisWorkflow.ThesisState, Long> getStatistics() {
+        return thesisWorkflowRepository.getStatistics();
     }
 
     private ThesisWorkflowDto convertToDto(ThesisWorkflow thesisWorkflow) {

@@ -12,6 +12,7 @@ import pt.ulisboa.tecnico.rnl.dei.dms.thesis.service.ThesisWorkflowService;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -68,6 +69,10 @@ public class DefenseWorkflowService {
     private DefenseWorkflow getDefenseWorkflowEntity(Long id) {
         return defenseWorkflowRepository.findById(id)
                 .orElseThrow(() -> new DEIException(ErrorMessage.NO_SUCH_DEFENSE_WORKFLOW, Long.toString(id)));
+    }
+
+    public Map<DefenseWorkflow.DefenseState, Long> getStatistics() {
+        return defenseWorkflowRepository.getStatistics();
     }
 
     private DefenseWorkflowDTO convertToDto(DefenseWorkflow defenseWorkflow) {
