@@ -70,8 +70,9 @@ export default class RemoteServices {
     return httpClient.post('/thesis', studentId)
   }
 
-  static async createDefense(thesisId: number): Promise<AxiosResponse<number>> {
-    return httpClient.post('/defense', thesisId)
+  static async createDefense(studentId: number): Promise<AxiosResponse<number>> {
+    console.log(studentId)
+    return httpClient.post('/defense', studentId)
   }
 
   static async submitThesisProposal(
