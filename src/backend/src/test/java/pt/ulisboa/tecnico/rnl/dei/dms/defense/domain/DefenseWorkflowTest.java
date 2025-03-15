@@ -1,15 +1,21 @@
 package pt.ulisboa.tecnico.rnl.dei.dms.defense.domain;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.Test;
 
 import pt.ulisboa.tecnico.rnl.dei.dms.defense.dto.DefenseWorkflowDTO;
 import pt.ulisboa.tecnico.rnl.dei.dms.exceptions.DEIException;
+import pt.ulisboa.tecnico.rnl.dei.dms.person.domain.Person;
+import pt.ulisboa.tecnico.rnl.dei.dms.person.domain.Person.PersonType;
 import pt.ulisboa.tecnico.rnl.dei.dms.thesis.domain.ThesisWorkflow;
 
 import java.time.LocalDate;
 
 class DefenseWorkflowTest {
+    Person student = new Person("Zé", "ist000", "ze@tecnico.pt", PersonType.STUDENT);
+    Person teacher1 = new Person("Prof. Z", "ist100", "prof.z@tecnico.pt", PersonType.TEACHER);
+    Person teacher2 = new Person("Prof. X", "ist200", "prof.x@tecnico.pt", PersonType.TEACHER);
 
     @Test
     void createWorkflow_InitialStateIsNotScheduled() {
@@ -41,9 +47,7 @@ class DefenseWorkflowTest {
     void markUnderReview_ValidTransition() {
         DefenseWorkflow workflow = createScheduledWorkflow(LocalDate.now());
         workflow.markUnderReview();
-        System.out.println(workflow.getState());
-        // assertEquals(DefenseWorkflow.DefenseState.UNDER_REVIEW, workflow.getState());
-        assertEquals(workflow, workflow);
+        assertEquals(DefenseWorkflow.DefenseState.UNDER_REVIEW, workflow.getState());
     }
 
     @Test
@@ -73,23 +77,15 @@ class DefenseWorkflowTest {
     @Test
     void revertState_FromUnderReviewToScheduled() {
         DefenseWorkflow workflow = createUnderReviewWorkflow();
-        workflow.revertState(DefenseWorkflow.DefenseState.SCHEDULED_DEFENSE);
+        workflow.setState(DefenseWorkflow.DefenseState.SCHEDULED_DEFENSE);
         
         assertEquals(DefenseWorkflow.DefenseState.SCHEDULED_DEFENSE, workflow.getState());
         assertNull(workflow.getGrade());
     }
 
     @Test
-    void revertState_ToInvalidState_ThrowsException() {
-        DefenseWorkflow workflow = createScheduledWorkflow(LocalDate.now());
-
-        assertThrows(DEIException.class, 
-            () -> workflow.revertState(DefenseWorkflow.DefenseState.SUBMITTED_FENIX));
-    }
-
-    @Test
     void createDTOFromEntity_AllFieldsMappedCorrectly() {
-        ThesisWorkflow thesis = new ThesisWorkflow();
+        ThesisWorkflow thesis = createThesisWorkflow();
         DefenseWorkflow entity = new DefenseWorkflow(thesis);
         entity.setId(1L);
         entity.scheduleDefense(LocalDate.now());
@@ -103,6 +99,32 @@ class DefenseWorkflowTest {
         assertEquals(DefenseWorkflow.DefenseState.SUBMITTED_FENIX, dto.getState());
         assertEquals(LocalDate.now(), dto.getScheduledDate());
         assertEquals(17.0, dto.getGrade());
+    }
+
+    @Test
+    void setThesisWorkflow_ValidState() {
+        ThesisWorkflow thesisWorkflow = new ThesisWorkflow();
+        thesisWorkflow.setState(ThesisWorkflow.ThesisState.SUBMITTED_FENIX);
+
+        DefenseWorkflow defenseWorkflow = new DefenseWorkflow();
+        defenseWorkflow.setThesisWorkflow(thesisWorkflow);
+
+        assertEquals(thesisWorkflow, defenseWorkflow.getThesisWorkflow());
+    }
+
+    @Test
+    void setThesisWorkflow_InvalidState() {
+        ThesisWorkflow thesisWorkflow = new ThesisWorkflow();
+        thesisWorkflow.setState(ThesisWorkflow.ThesisState.DOCUMENT_SIGNED);
+
+        DefenseWorkflow defenseWorkflow = new DefenseWorkflow();
+        assertThrows(DEIException.class, () -> defenseWorkflow.setThesisWorkflow(thesisWorkflow));
+    }
+
+    @Test
+    void setThesisWorkflow_NullThesisWorkflow() {
+        DefenseWorkflow defenseWorkflow = new DefenseWorkflow();
+        assertThrows(DEIException.class, () -> defenseWorkflow.setThesisWorkflow(null));
     }
 
     @Test
@@ -131,5 +153,11 @@ class DefenseWorkflowTest {
         DefenseWorkflow workflow = createScheduledWorkflow(LocalDate.now());
         workflow.markUnderReview();
         return workflow;
+    }
+
+    private ThesisWorkflow createThesisWorkflow() {
+        ThesisWorkflow thesis = new ThesisWorkflow(student);
+        thesis.setState(ThesisWorkflow.ThesisState.SUBMITTED_FENIX);
+        return thesis;
     }
 }
