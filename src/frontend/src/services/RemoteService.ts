@@ -30,6 +30,14 @@ export default class RemoteServices {
     return httpClient.delete(`/people/${id}`)
   }
 
+  static async getThesisStatistics(): Promise<AxiosResponse<number>> {
+    return httpClient.get('/thesis/statistics')
+  }
+
+  static async getDefenseStatistics(): Promise<AxiosResponse<number>> {
+    return httpClient.get('/defense/statistics')
+  }
+
   static async errorMessage(error: any): Promise<string> {
     if (error.message === 'Network Error') {
       return 'Unable to connect to the server'
