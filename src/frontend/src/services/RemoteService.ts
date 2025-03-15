@@ -55,6 +55,10 @@ export default class RemoteServices {
     return httpClient.get('/thesis')
   }
 
+  static async getDefense(): Promise<AxiosResponse<number>> {
+    return httpClient.get('/defense')
+  }
+
   static async getThesisByStudent(studentId: number): Promise<AxiosResponse<number>> {
     if (!studentId) {
       studentId = defaultData.studentId
@@ -64,6 +68,10 @@ export default class RemoteServices {
 
   static async createThesis(studentId: number): Promise<AxiosResponse<number>> {
     return httpClient.post('/thesis', studentId)
+  }
+
+  static async createDefense(thesisId: number): Promise<AxiosResponse<number>> {
+    return httpClient.post('/defense', thesisId)
   }
 
   static async submitThesisProposal(
