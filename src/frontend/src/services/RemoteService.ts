@@ -63,15 +63,14 @@ export default class RemoteServices {
   }
 
   static async createThesis(studentId: number): Promise<AxiosResponse<number>> {
-    console.log(studentId)
     return httpClient.post('/thesis', studentId)
   }
 
-  static async postThesisJurySelection(
+  static async submitThesisProposal(
     thesisId: number,
     juryIds: number[]
   ): Promise<AxiosResponse<void>> {
-    return httpClient.post(`/thesis/${thesisId}/jury`, juryIds)
+    return httpClient.post(`/thesis/${thesisId}/submit-proposal`, juryIds)
   }
 
   static async errorMessage(error: any): Promise<string> {
