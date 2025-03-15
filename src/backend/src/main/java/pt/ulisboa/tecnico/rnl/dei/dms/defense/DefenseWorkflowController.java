@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import pt.ulisboa.tecnico.rnl.dei.dms.defense.domain.DefenseWorkflow;
 import pt.ulisboa.tecnico.rnl.dei.dms.defense.dto.DefenseWorkflowDTO;
 import pt.ulisboa.tecnico.rnl.dei.dms.defense.service.DefenseWorkflowService;
-import pt.ulisboa.tecnico.rnl.dei.dms.thesis.domain.ThesisWorkflow;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -25,14 +24,24 @@ public class DefenseWorkflowController {
         return defenseWorkflowService.getAllDefenseWorkflows();
     }
 
+    @GetMapping("/student/{studentId}")
+    public DefenseWorkflowDTO getDefenseWorkflowByStudentId(@PathVariable Long studentId) {
+        return defenseWorkflowService.getDefenseWorkflowByStudentId(studentId);
+    }
+
+    @GetMapping("/thesis/{thesisWorkflowId}")
+    public DefenseWorkflowDTO getDefenseWorkflowByThesisWorkflowId(@PathVariable Long thesisWorkflowId) {
+        return defenseWorkflowService.getDefenseWorkflowByThesisWorkflowId(thesisWorkflowId);
+    }
+
     @GetMapping("/{id}")
     public DefenseWorkflowDTO getDefenseWorkflowById(@PathVariable Long id) {
         return defenseWorkflowService.getDefenseWorkflowById(id);
     }
 
     @PostMapping
-    public DefenseWorkflowDTO createDefenseWorkflow(@RequestParam Long thesisWorkflowId) {
-        return defenseWorkflowService.createDefenseWorkflow(thesisWorkflowId);
+    public DefenseWorkflowDTO createDefenseWorkflow(@RequestParam Long studentId) {
+        return defenseWorkflowService.createDefenseWorkflow(studentId);
     }
 
     @DeleteMapping("/{id}")
