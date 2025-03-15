@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.rnl.dei.dms.thesis.repository;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +15,6 @@ import pt.ulisboa.tecnico.rnl.dei.dms.thesis.domain.ThesisWorkflow;
 public interface ThesisWorkflowRepository extends JpaRepository<ThesisWorkflow, Long> {
     
     @Query("SELECT t.state, COUNT(t) FROM ThesisWorkflow t GROUP BY t.state")
-    Map<ThesisWorkflow.ThesisState, Long> getStatistics();
+    List<Object[]> getStatistics();
 
 }

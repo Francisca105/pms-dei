@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.rnl.dei.dms.defense.repository;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +15,6 @@ import pt.ulisboa.tecnico.rnl.dei.dms.defense.domain.DefenseWorkflow;
 public interface DefenseWorkflowRepository extends JpaRepository<DefenseWorkflow, Long> {
     
     @Query("SELECT t.state, COUNT(t) FROM DefenseWorkflow t GROUP BY t.state")
-    Map<DefenseWorkflow.DefenseState, Long> getStatistics();
+    List<Object[]> getStatistics();
 
 }
