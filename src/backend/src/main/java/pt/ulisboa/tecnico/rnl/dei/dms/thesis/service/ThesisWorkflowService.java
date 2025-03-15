@@ -57,6 +57,14 @@ public class ThesisWorkflowService {
         return convertToDto(thesisWorkflow);
     }
 
+    public ThesisWorkflow getThesisWorkflowByStudentIdEntity(Long studentId) {
+        ThesisWorkflow thesisWorkflow = thesisWorkflowRepository.findByStudentId(studentId);
+        if (thesisWorkflow == null) {
+            return null;
+        }
+        return thesisWorkflow;
+    }
+
     public ThesisWorkflowDto createThesisWorkflow(Long studentId) {
         Person student = personService.getPersonById(studentId);
         if (student.getType() != Person.PersonType.STUDENT) {
