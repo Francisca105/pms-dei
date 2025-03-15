@@ -95,6 +95,11 @@ public class PersonService {
 	}
 
 	@Transactional
+	public Person getPersonById(long id) {
+		return fetchPersonOrThrow(id);
+	}
+
+	@Transactional
 	public PersonDto updatePerson(long id, PersonDto personDto) {
 		fetchPersonOrThrow(id); // ensure exists
 		checkPersonDto(personDto); // ensure valid
