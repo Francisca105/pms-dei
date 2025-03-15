@@ -24,6 +24,7 @@ public enum ErrorMessage {
 	THESIS_JURY_NON_TEACHER_MEMBER("O júri especificado contém membros que não são professores.", 2023),
 	THESIS_DOCUMENT_INVALID_DATE("A data de submissão do documento da tese não é válida.", 2024),
 	THESIS_STATE_CHANGE_BLOCKED("A mudança de estado da tese não é possível.", 2025),
+	NO_SUCH_THESIS_WORKFLOW("Não existe nenhuma tese com o ID %s", 2026),
 
 
 	DEFENSE_GRADE_SUBMISSION_ERROR("A submissão da nota da defesa não é válida.", 3001),
@@ -37,6 +38,7 @@ public enum ErrorMessage {
 	DEFENSE_UNDER_REVIEW_FUTURE_DATE("A marcação de revisão da defesa não pode ser feita antes da data de agendamento.", 3009),
 	DEFENSE_NO_THESIS_WORKFLOW("A defesa não tem um workflow de tese associado.", 3010),
 	DEFENSE_THESIS_NOT_COMPLETE("A tese associada à defesa não está completa.", 3011),
+	NO_SUCH_DEFENSE_WORKFLOW("Não existe nenhuma defesa com o ID %s", 3012),
 
 	NO_SUCH_PERSON("Não existe nenhuma pessoa com o ID %s", 1001),
 	PERSON_NAME_NOT_VALID("O nome da pessoa especificado não é válido.", 1002),
