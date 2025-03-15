@@ -5,6 +5,27 @@
     </v-col>
   </v-row>
 
+  <v-row>
+    <v-col cols="12" sm="6">
+      <v-select
+        v-model="thesisFilter"
+        :items="thesisStatusOptions"
+        label="Filtrar por Estado da Tese"
+        clearable
+        variant="outlined"
+      ></v-select>
+    </v-col>
+    <v-col cols="12" sm="6">
+      <v-select
+        v-model="defenseFilter"
+        :items="defenseStatusOptions"
+        label="Filtrar por Estado da Defesa"
+        clearable
+        variant="outlined"
+      ></v-select>
+    </v-col>
+  </v-row>
+
   <v-text-field
     v-model="search"
     label="Search"
@@ -16,10 +37,9 @@
 
   <v-data-table
     :headers="headers"
-    :items="people"
+    :items="filteredPeople"
     :search="search"
     :loading="loading"
-    :custom-filter="fuzzySearch"
     item-key="id"
     class="text-left"
     no-data-text="Sem pessoas a apresentar."
@@ -72,65 +92,57 @@
 <script setup lang="ts">
 import type PeopleDto from '@/models/PeopleDto'
 import RemoteService from '@/services/RemoteService'
-import { reactive, ref } from 'vue'
+import { reactive, ref, computed } from 'vue'
 
 let search = ref('')
 let loading = ref(true)
-let editDialog = ref(false)
-let deleteDialog = ref(false)
+let thesisFilter = ref('')
+let defenseFilter = ref('')
+
+const thesisStatusOptions = [
+  'PROPOSAL_SUBMITTED',
+  'APPROVED_SC',
+  'PRESIDENT_ASSIGNED',
+  'DOCUMENT_SIGNED',
+  'SUBMITTED_FENIX',
+  'Sem Tese'
+]
+
+const defenseStatusOptions = [
+  'NOT_SCHEDULED',
+  'SCHEDULED_DEFENSE',
+  'UNDER_REVIEW',
+  'SUBMITTED_FENIX',
+  'Sem Defesa'
+]
 
 const headers = [
-  { title: 'ID', key: 'id', value: 'id', sortable: true, filterable: false },
-  {
-    title: 'Nome',
-    key: 'name',
-    value: 'name',
-    sortable: true,
-    filterable: true
-  },
-  {
-    title: 'IST ID',
-    key: 'istId',
-    value: 'istId',
-    sortable: true,
-    filterable: true
-  },
-  {
-    title: 'Email',
-    key: 'email',
-    value: 'email',
-    sortable: true,
-    filterable: true
-  },
-  {
-    title: 'Estado da Tese',
-    key: 'thesisStatus',
-    value: 'thesisStatus',
-    sortable: true,
-    filterable: true
-  },
-  {
-    title: 'Estado da Defesa',
-    key: 'defenseStatus',
-    value: 'defenseStatus',
-    sortable: true,
-    filterable: true
-  }
-  // TODO: Add actions
-  // {
-  //   title: 'Ações',
-  //   key: 'actions',
-  //   sortable: false,
-  //   filterable: false
-  // }
+  { title: 'ID', key: 'id', sortable: true },
+  { title: 'Nome', key: 'name', sortable: true },
+  { title: 'IST ID', key: 'istId', sortable: true },
+  { title: 'Email', key: 'email', sortable: true },
+  { title: 'Estado da Tese', key: 'thesisStatus', sortable: true },
+  { title: 'Estado da Defesa', key: 'defenseStatus', sortable: true }
 ]
 
 let people: PeopleDto[] = reactive([])
 
-getPeople()
+const filteredPeople = computed(() => {
+  return people.filter((person) => {
+    const matchesSearch =
+      fuzzySearch(person.name, search.value) ||
+      fuzzySearch(person.email, search.value) ||
+      fuzzySearch(person.istId, search.value)
+
+    const matchesThesis = !thesisFilter.value || person.thesisStatus === thesisFilter.value
+    const matchesDefense = !defenseFilter.value || person.defenseStatus === defenseFilter.value
+
+    return matchesSearch && matchesThesis && matchesDefense
+  })
+})
+
 async function getPeople() {
   loading.value = true
-
   const students = await RemoteService.getStudents()
   const thesisStatuses = await RemoteService.getThesis()
   const defenseStatuses = await RemoteService.getDefense()
@@ -150,9 +162,10 @@ async function getPeople() {
 }
 
 const fuzzySearch = (value: string, search: string) => {
-  // Regex to match any character in between the search characters
   if (!value) return false
-  let searchRegex = new RegExp(search.split('').join('.*'), 'i')
+  const searchRegex = new RegExp(search.split('').join('.*'), 'i')
   return searchRegex.test(value)
 }
+
+getPeople()
 </script>
