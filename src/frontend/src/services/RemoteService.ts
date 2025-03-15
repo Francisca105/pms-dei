@@ -9,6 +9,15 @@ httpClient.defaults.timeout = 50000
 httpClient.defaults.baseURL = import.meta.env.VITE_ROOT_API
 httpClient.defaults.headers.post['Content-Type'] = 'application/json'
 
+// TODO: Change this when I have the final populate.sql
+const defaultData = {
+  studentId: 1,
+  teacherId: 3,
+  coordinatorId: 0,
+  staffId: 0,
+  scId: 0
+}
+
 export default class RemoteServices {
   static async getPeople(): Promise<PersonDto[]> {
     return httpClient.get('/people')
@@ -40,6 +49,29 @@ export default class RemoteServices {
 
   static async getDefenseStatistics(): Promise<AxiosResponse<number>> {
     return httpClient.get('/defense/statistics')
+  }
+
+  static async getThesis(): Promise<AxiosResponse<number>> {
+    return httpClient.get('/thesis')
+  }
+
+  static async getThesisByStudent(studentId: number): Promise<AxiosResponse<number>> {
+    if (!studentId) {
+      studentId = defaultData.studentId
+    }
+    return httpClient.get(`/thesis/student/${studentId}`)
+  }
+
+  static async createThesis(studentId: number): Promise<AxiosResponse<number>> {
+    console.log(studentId)
+    return httpClient.post('/thesis', studentId)
+  }
+
+  static async postThesisJurySelection(
+    thesisId: number,
+    juryIds: number[]
+  ): Promise<AxiosResponse<void>> {
+    return httpClient.post(`/thesis/${thesisId}/jury`, juryIds)
   }
 
   static async errorMessage(error: any): Promise<string> {

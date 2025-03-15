@@ -21,32 +21,37 @@ const router = createRouter({
     {
       path: '/students',
       name: 'students',
-      component: StudenstView,
-      beforeEnter: (to, from, next) => {
-        const roleStore = useRoleStore()
-        console.log('roleStore', roleStore.currentActiveRole)
-        if (roleStore.isStudent) {
-          next('/403') // Redireciona para a página de erro
-        } else {
-          next()
-        }
-      }
+      component: StudenstView
     },
     {
       path: '/statistics',
       name: 'statistics',
       component: StatisticsView
     },
-
+    {
+      path: '/thesis',
+      name: 'thesis',
+      component: () => import('@/views/thesis/ThesisView.vue')
+    },
+    {
+      path: '/thesis/create',
+      name: 'thesis-create',
+      component: () => import('@/views/thesis/create/ThesisCreateView.vue')
+    },
+    {
+      path: '/thesis/jury',
+      name: 'thesis-jury',
+      component: () => import('@/views/thesis/jury_selection/ThesisJurySelectionView.vue')
+    },
     {
       path: '/403',
       name: 'forbidden',
-      component: () => import('@/views/errors/Error403.vue')
+      component: () => import('@/components/errors/Error403.vue')
     },
     {
       path: '/:pathMatch(.*)*', // Wildcard
       name: 'not-found',
-      component: () => import('@/views/errors/Error404.vue')
+      component: () => import('@/components/errors/Error404.vue')
     }
   ]
 })
