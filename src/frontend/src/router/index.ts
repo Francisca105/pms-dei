@@ -39,6 +39,11 @@ const router = createRouter({
       component: () => import('@/views/thesis/create/ThesisCreateView.vue')
     },
     {
+      path: '/defense/create',
+      name: 'defense-create',
+      component: () => import('@/views/defense/create/DefenseCreateView.vue')
+    },
+    {
       path: '/thesis/:id/jury',
       component: () => import('@/views/thesis/jury_selection/ThesisJurySelectionView.vue')
     },
