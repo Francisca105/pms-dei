@@ -39,6 +39,22 @@ public class DefenseWorkflowService {
                 .orElseThrow(() -> new DEIException(ErrorMessage.NO_SUCH_DEFENSE_WORKFLOW, Long.toString(id))));
     }
 
+    public DefenseWorkflowDTO getDefenseWorkflowByStudentId(Long studentId) {
+        DefenseWorkflow defenseWorkflow = defenseWorkflowRepository.findByStudentId(studentId);
+        if (defenseWorkflow == null) {
+            return null;
+        }
+        return convertToDto(defenseWorkflow);
+    }
+
+    public DefenseWorkflowDTO getDefenseWorkflowByThesisWorkflowId(Long thesisWorkflowId) {
+        DefenseWorkflow defenseWorkflow = defenseWorkflowRepository.findByThesisWorkflowId(thesisWorkflowId);
+        if (defenseWorkflow == null) {
+            return null;
+        }
+        return convertToDto(defenseWorkflow);
+    }
+
     public void deleteDefenseWorkflow(Long id) {
         defenseWorkflowRepository.deleteById(id);
     }
@@ -61,8 +77,12 @@ public class DefenseWorkflowService {
         return convertToDto(defenseWorkflowRepository.save(defenseWorkflow));
     }
 
-    public DefenseWorkflowDTO createDefenseWorkflow(Long thesisWorkflowId) {
-        ThesisWorkflow thesisWorkflow = thesisWorkflowService.getThesisWorkflowEntity(thesisWorkflowId);
+    public DefenseWorkflowDTO createDefenseWorkflow(Long studentId) {
+        ThesisWorkflow thesisWorkflow = thesisWorkflowService.getThesisWorkflowByStudentIdEntity(studentId);
+        if (thesisWorkflow == null) {
+            throw new DEIException(ErrorMessage.THESIS_NOT_FOUND, Long.toString(studentId));
+        }
+
         DefenseWorkflow defenseWorkflow = new DefenseWorkflow(thesisWorkflow);
         return convertToDto(defenseWorkflowRepository.save(defenseWorkflow));
     }
