@@ -39,8 +39,7 @@ const router = createRouter({
       component: () => import('@/views/thesis/create/ThesisCreateView.vue')
     },
     {
-      path: '/thesis/jury',
-      name: 'thesis-jury',
+      path: '/thesis/:id/jury',
       component: () => import('@/views/thesis/jury_selection/ThesisJurySelectionView.vue')
     },
     {
