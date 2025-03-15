@@ -3,9 +3,6 @@
     <v-col>
       <h2 class="text-left ml-1">Listagem de Estudantes</h2>
     </v-col>
-    <v-col cols="auto">
-      <CreatePersonDialog @person-created="getPeople" />
-    </v-col>
   </v-row>
 
   <v-text-field
