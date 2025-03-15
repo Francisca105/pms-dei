@@ -30,44 +30,15 @@ public class DefenseWorkflowDTO {
         this.scheduledDate = defenseWorkflow.getScheduledDate();
         this.grade = defenseWorkflow.getGrade();
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getThesisWorkflowId() {
-        return thesisWorkflowId;
-    }
-
-    public void setThesisWorkflowId(Long thesisWorkflowId) {
-        this.thesisWorkflowId = thesisWorkflowId;
-    }
-
-    public DefenseState getState() {
-        return state;
-    }
-
-    public void setState(DefenseState state) {
-        this.state = state;
-    }
-
-    public LocalDate getScheduledDate() {
-        return scheduledDate;
-    }
-
-    public void setScheduledDate(LocalDate scheduledDate) {
-        this.scheduledDate = scheduledDate;
-    }
-
-    public Double getGrade() {
-        return grade;
-    }
-
-    public void setGrade(Double grade) {
-        this.grade = grade;
-    }
+    
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public Long getThesisWorkflowId() { return thesisWorkflowId; }
+    public void setThesisWorkflowId(Long thesisWorkflowId) { this.thesisWorkflowId = thesisWorkflowId; }
+    public DefenseState getState() { return state; }
+    public void setState(DefenseState state) { this.state = state; }
+    public LocalDate getScheduledDate() { return scheduledDate; }
+    public void setScheduledDate(LocalDate scheduledDate) { this.scheduledDate = scheduledDate; }
+    public Double getGrade() { return grade; }
+    public void setGrade(Double grade) { this.grade = grade; }
 }

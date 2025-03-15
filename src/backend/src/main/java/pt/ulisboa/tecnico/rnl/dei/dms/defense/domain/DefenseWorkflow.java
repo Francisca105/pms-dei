@@ -34,6 +34,7 @@ public class DefenseWorkflow {
 
     public DefenseWorkflow(ThesisWorkflow thesisWorkflow) {
         setThesisWorkflow(thesisWorkflow);
+        thesisWorkflow.setDefenseWorkflow(this);
         setState(DefenseState.NOT_SCHEDULED);
     }
 
@@ -67,11 +68,9 @@ public class DefenseWorkflow {
         setState(DefenseState.SUBMITTED_FENIX);
     }
 
-    public void revertState(DefenseState targetState) {
-        if (targetState.ordinal() >= getState().ordinal()) {
-            throw new DEIException(ErrorMessage.DEFENSE_REVERT_INVALID_STATE);
-        }
-        setState(targetState);
+    public void setState(DefenseState targetState) {
+        this.state = targetState;
+
         if (targetState == DefenseState.NOT_SCHEDULED) {
             setScheduledDate(null);
             setGrade(null);
@@ -94,12 +93,20 @@ public class DefenseWorkflow {
         this.grade = grade;
     }
 
+    public void setThesisWorkflow(ThesisWorkflow thesisWorkflow) { 
+        if (thesisWorkflow == null) {
+            throw new DEIException(ErrorMessage.DEFENSE_NO_THESIS_WORKFLOW);
+        }
+        if (!thesisWorkflow.getState().equals(ThesisWorkflow.ThesisState.SUBMITTED_FENIX)) {
+            throw new DEIException(ErrorMessage.DEFENSE_THESIS_NOT_COMPLETE);
+        }
+        this.thesisWorkflow = thesisWorkflow;
+    }
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public ThesisWorkflow getThesisWorkflow() { return thesisWorkflow; }
-    public void setThesisWorkflow(ThesisWorkflow thesisWorkflow) { this.thesisWorkflow = thesisWorkflow; }
     public DefenseState getState() { return state; }
-    public void setState(DefenseState state) { this.state = state; }
     public LocalDate getScheduledDate() { return scheduledDate; }
     public Double getGrade() { return grade; }
 }
