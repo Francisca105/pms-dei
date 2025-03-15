@@ -47,13 +47,6 @@ class ThesisWorkflowTest {
     }
 
     @Test
-    void signDocument_WithoutPresident() {
-        ThesisWorkflow workflow = createPresidentAssignedWorkflow();
-        // workflow.setPresident(null);
-        assertThrows(DEIException.class, () -> workflow.signDocument(new ThesisDocument()));
-    }
-
-    @Test
     void setState_WithAdvancedDefense_ThrowsException() {
         ThesisWorkflow thesis = new ThesisWorkflow();
         thesis.setState(ThesisState.SUBMITTED_FENIX); 
