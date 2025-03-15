@@ -2,8 +2,8 @@
   <div class="text-center">
     <h1>Bem-vindo ao PMS!</h1>
     <p>Página inicial para {{ appName }}</p>
-    <br>
-    
+    <br />
+
     <!-- Role-based content -->
     <div v-if="roleStore.currentRole === 'student'">
       <h2>Área do Estudante</h2>
