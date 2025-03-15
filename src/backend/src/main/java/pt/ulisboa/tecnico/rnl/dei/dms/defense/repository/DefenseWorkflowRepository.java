@@ -20,5 +20,5 @@ public interface DefenseWorkflowRepository extends JpaRepository<DefenseWorkflow
     DefenseWorkflow findByStudentId(Long studentId);
 
     @Query("SELECT d FROM DefenseWorkflow d WHERE d.thesisWorkflow.thesis.id = :thesisId")
-    DefenseWorkflow findByThesisId(Long thesisId);
+    DefenseWorkflow findByThesisWorkflowId(Long thesisId);
 }
