@@ -27,15 +27,47 @@
     class="text-left"
     no-data-text="Sem pessoas a apresentar."
   >
-    <template v-slot:[`item.type`]="{ item }">
-      <v-chip v-if="item.type === 'COORDINATOR'" color="purple" text-color="white">
-        Coordenador
+    <template v-slot:[`item.thesisStatus`]="{ item }">
+      <v-chip v-if="item.thesisStatus === 'PROPOSAL_SUBMITTED'" color="purple" text-color="white">
+        Proposta Submetida
       </v-chip>
-      <v-chip v-else-if="item.type === 'STAFF'" color="red" text-color="white"> Staff </v-chip>
-      <v-chip v-else-if="item.type === 'TEACHER'" color="blue" text-color="white">
-        Professor
+      <v-chip v-else-if="item.thesisStatus === 'APPROVED_SC'" color="blue" text-color="white">
+        Aprovado pelo SC
       </v-chip>
-      <v-chip v-else color="green" text-color="white"> Aluno </v-chip>
+      <v-chip
+        v-else-if="item.thesisStatus === 'PRESIDENT_ASSIGNED'"
+        color="orange"
+        text-color="white"
+      >
+        Presidente Atribuído
+      </v-chip>
+      <v-chip v-else-if="item.thesisStatus === 'DOCUMENT_SIGNED'" color="green" text-color="white">
+        Documento Assinado
+      </v-chip>
+      <v-chip v-else-if="item.thesisStatus === 'SUBMITTED_FENIX'" color="red" text-color="white">
+        Submetido no Fenix
+      </v-chip>
+      <v-chip v-else color="grey" text-color="white"> Sem Tese </v-chip>
+    </template>
+
+    <template v-slot:[`item.defenseStatus`]="{ item }">
+      <v-chip v-if="item.defenseStatus === 'NOT_SCHEDULED'" color="grey" text-color="white">
+        Não Agendada
+      </v-chip>
+      <v-chip
+        v-else-if="item.defenseStatus === 'SCHEDULED_DEFENSE'"
+        color="blue"
+        text-color="white"
+      >
+        Defesa Agendada
+      </v-chip>
+      <v-chip v-else-if="item.defenseStatus === 'UNDER_REVIEW'" color="orange" text-color="white">
+        Em Revisão
+      </v-chip>
+      <v-chip v-else-if="item.defenseStatus === 'SUBMITTED_FENIX'" color="red" text-color="white">
+        Submetido no Fenix
+      </v-chip>
+      <v-chip v-else color="grey" text-color="white"> Sem Defesa </v-chip>
     </template>
   </v-data-table>
 </template>
@@ -44,7 +76,6 @@
 import type PeopleDto from '@/models/PeopleDto'
 import RemoteService from '@/services/RemoteService'
 import { reactive, ref } from 'vue'
-import { useRoleStore } from '@/stores/role'
 
 let search = ref('')
 let loading = ref(true)
@@ -73,15 +104,51 @@ const headers = [
     value: 'email',
     sortable: true,
     filterable: true
+  },
+  {
+    title: 'Estado da Tese',
+    key: 'thesisStatus',
+    value: 'thesisStatus',
+    sortable: true,
+    filterable: true
+  },
+  {
+    title: 'Estado da Defesa',
+    key: 'defenseStatus',
+    value: 'defenseStatus',
+    sortable: true,
+    filterable: true
   }
+  // TODO: Add actions
+  // {
+  //   title: 'Ações',
+  //   key: 'actions',
+  //   sortable: false,
+  //   filterable: false
+  // }
 ]
 
 let people: PeopleDto[] = reactive([])
 
 getPeople()
 async function getPeople() {
-  people.splice(0, people.length)
-  people.push(...(await RemoteService.getStudents()))
+  loading.value = true
+
+  const students = await RemoteService.getStudents()
+  const thesisStatuses = await RemoteService.getThesis()
+  const defenseStatuses = await RemoteService.getDefense()
+
+  const studentsComplete = students.map((student) => {
+    const thesis = thesisStatuses.find((t) => t.student.id === student.id)
+    const defense = defenseStatuses.find((d) => d.student.id === student.id)
+    return {
+      ...student,
+      thesisStatus: thesis ? thesis.state : 'Sem Tese',
+      defenseStatus: defense ? defense.state : 'Sem Defesa'
+    }
+  })
+
+  people.splice(0, people.length, ...studentsComplete)
   loading.value = false
 }
 
