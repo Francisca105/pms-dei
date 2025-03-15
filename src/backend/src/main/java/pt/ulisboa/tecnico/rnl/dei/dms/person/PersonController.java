@@ -29,6 +29,11 @@ public class PersonController {
 		return personService.getStudents();
 	}
 
+	@GetMapping("/teachers")
+	public List<PersonDto> getTeachers() {
+		return personService.getTeachers();
+	}
+
 	@PostMapping("/people")
 	public PersonDto createPerson(@RequestBody PersonDto personDto) {
 		return personService.createPerson(personDto);
