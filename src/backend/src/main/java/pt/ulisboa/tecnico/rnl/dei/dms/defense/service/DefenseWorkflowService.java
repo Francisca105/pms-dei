@@ -80,7 +80,7 @@ public class DefenseWorkflowService {
     public DefenseWorkflowDTO createDefenseWorkflow(Long studentId) {
         ThesisWorkflow thesisWorkflow = thesisWorkflowService.getThesisWorkflowByStudentIdEntity(studentId);
         if (thesisWorkflow == null) {
-            throw new DEIException(ErrorMessage.THESIS_NOT_FOUND, Long.toString(studentId));
+            throw new DEIException(ErrorMessage.DEFENSE_STUDENT_THESIS_NOT_FOUND, Long.toString(studentId));
         }
 
         DefenseWorkflow defenseWorkflow = new DefenseWorkflow(thesisWorkflow);

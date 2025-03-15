@@ -39,6 +39,7 @@ public enum ErrorMessage {
 	DEFENSE_NO_THESIS_WORKFLOW("A defesa não tem um workflow de tese associado.", 3010),
 	DEFENSE_THESIS_NOT_COMPLETE("A tese associada à defesa não está completa.", 3011),
 	NO_SUCH_DEFENSE_WORKFLOW("Não existe nenhuma defesa com o ID %s", 3012),
+	DEFENSE_STUDENT_THESIS_NOT_FOUND("Não existe nenhuma tese associada ao estudante com o ID %s", 3013),
 
 	NO_SUCH_PERSON("Não existe nenhuma pessoa com o ID %s", 1001),
 	PERSON_NAME_NOT_VALID("O nome da pessoa especificado não é válido.", 1002),
