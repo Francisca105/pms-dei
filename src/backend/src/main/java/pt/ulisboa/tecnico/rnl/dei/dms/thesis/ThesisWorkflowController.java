@@ -29,9 +29,14 @@ public class ThesisWorkflowController {
         return thesisWorkflowService.getThesisWorkflowById(id);
     }
 
+    @GetMapping("/student/{studentId}")
+    public ThesisWorkflowDto getThesisWorkflowByStudentId(@PathVariable Long studentId) {
+        return thesisWorkflowService.getThesisWorkflowByStudentId(studentId);
+    }
+
     @PostMapping
-    public ThesisWorkflowDto createThesisWorkflow(@RequestBody ThesisWorkflowDto thesisWorkflowDto) {
-        return thesisWorkflowService.createThesisWorkflow(thesisWorkflowDto);
+    public ThesisWorkflowDto createThesisWorkflow(@RequestBody Long studentId) {
+        return thesisWorkflowService.createThesisWorkflow(studentId);
     }
 
     @DeleteMapping("/{id}")

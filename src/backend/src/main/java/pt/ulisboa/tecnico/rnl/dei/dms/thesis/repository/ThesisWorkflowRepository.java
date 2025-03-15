@@ -17,4 +17,7 @@ public interface ThesisWorkflowRepository extends JpaRepository<ThesisWorkflow, 
     @Query("SELECT t.state, COUNT(t) FROM ThesisWorkflow t GROUP BY t.state")
     List<Object[]> getStatistics();
 
+    @Query("SELECT t FROM ThesisWorkflow t WHERE t.student.id = :studentId")
+    ThesisWorkflow findByStudentId(Long studentId);
+
 }

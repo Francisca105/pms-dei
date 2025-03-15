@@ -49,8 +49,16 @@ public class ThesisWorkflowService {
                 .orElseThrow(() -> new DEIException(ErrorMessage.NO_SUCH_THESIS_WORKFLOW, Long.toString(id))));
     }
 
-    public ThesisWorkflowDto createThesisWorkflow(ThesisWorkflowDto thesisWorkflowDto) {
-        Person student = new Person(personService.getPerson(thesisWorkflowDto.getStudent().getId()));
+    public ThesisWorkflowDto getThesisWorkflowByStudentId(Long studentId) {
+        ThesisWorkflow thesisWorkflow = thesisWorkflowRepository.findByStudentId(studentId);
+        if (thesisWorkflow == null) {
+            return null;
+        }
+        return convertToDto(thesisWorkflow);
+    }
+
+    public ThesisWorkflowDto createThesisWorkflow(Long studentId) {
+        Person student = personService.getPersonById(studentId);
         if (student.getType() != Person.PersonType.STUDENT) {
             throw new DEIException(ErrorMessage.THESIS_SUBMISSION_NOT_STUDENT);
         }
