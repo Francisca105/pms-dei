@@ -5,6 +5,7 @@ import DeiError from '@/models/DeiError'
 import type PersonDto from '@/models/PersonDto'
 import type ThesisWorkflowDto from '@/models/ThesisWorkflowDto'
 import type ThesisDocumentDto from '@/models/ThesisDocumentDto'
+import type DefenseWorkflowDto from '@/models/DefenseWorkflowDto'
 
 const httpClient = axios.create()
 httpClient.defaults.timeout = 50000
@@ -79,6 +80,10 @@ export default class RemoteServices {
     return httpClient.get(`/defense/student/${studentId}`)
   }
 
+  static async getDefenseById(defenseId: number): Promise<AxiosResponse<number>> {
+    return httpClient.get(`/defense/${defenseId}`)
+  }
+
   static async createThesis(studentId: number): Promise<AxiosResponse<number>> {
     return httpClient.post('/thesis', studentId)
   }
@@ -143,31 +148,31 @@ export default class RemoteServices {
 
   static async signThesisDocument(
     id: number,
-    documentDto: ThesisDocumentDto
+    formData: FormData
   ): Promise<AxiosResponse<ThesisWorkflowDto>> {
-    if (!documentDto) {
-      const filePath = '../../public/DocumentoOficial.pdf';
-
-      try {
-          const response = await fetch(filePath);
-          if (!response.ok) {
-              throw new Error('Failed to load PDF file');
-          }
-
-          const fileContent = await response.arrayBuffer();
-          const contentArray = Array.from(new Uint8Array(fileContent));
-
-          documentDto = {
-              content: contentArray,
-              name: 'default-document.pdf',
-              uploadDate: new Date().toISOString()
-          };
-      } catch (error) {
-          console.error('Error loading PDF file:', error);
-          throw new Error('Failed to load PDF file');
+    return httpClient.post(`/thesis/${id}/sign-document`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
       }
+    })
   }
-  return httpClient.post(`/thesis/${id}/sign-document`, documentDto);
+
+  static async scheduleDefense(
+    id: number,
+    date: string
+  ): Promise<AxiosResponse<DefenseWorkflowDto>> {
+    return httpClient.post(`/defense/${id}/schedule`, { date })
+  }
+
+  static async markDefenseUnderReview(id: number): Promise<AxiosResponse<DefenseWorkflowDto>> {
+    return httpClient.post(`/defense/${id}/mark-under-review`)
+  }
+
+  static async submitDefenseGrade(
+    id: number,
+    grade: number
+  ): Promise<AxiosResponse<DefenseWorkflowDto>> {
+    return httpClient.post(`/defense/${id}/submit-grade`, { grade })
   }
 
   static async submitThesisToFenix(id: number): Promise<AxiosResponse<ThesisWorkflowDto>> {
