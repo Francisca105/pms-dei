@@ -23,6 +23,10 @@ const defaultData = {
 }
 
 export default class RemoteServices {
+  static async getLogs(): Promise<AxiosResponse<string[]>> {
+    return httpClient.get('/logs')
+  }
+
   static async getPeople(): Promise<PersonDto[]> {
     return httpClient.get('/people')
   }

@@ -85,6 +85,11 @@ const router = createRouter({
       component: () => import('@/views/profile/ProfileView.vue')
     },
     {
+      path: '/logs',
+      name: 'logs',
+      component: () => import('@/views/logs/LogsView.vue')
+    },
+    {
       path: '/403',
       name: 'forbidden',
       component: () => import('@/components/errors/Error403.vue')
