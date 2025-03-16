@@ -8,7 +8,7 @@
     <div v-if="roleStore.currentRole === 'student'">
       <h2>Área do Estudante</h2>
       <p>Aqui pode gerir a sua tese e defesa.</p>
-      <router-link to="/students">Ver o Meu Progresso</router-link>
+      <router-link to="/profile/1">Ver o Meu Progresso</router-link>
     </div>
 
     <div v-else-if="roleStore.currentRole === 'coordinator'">
