@@ -6,16 +6,10 @@
           <v-card-text>
             <p>Agende a data e hora da defesa:</p>
             <v-date-picker v-model="defenseDate" :min="minDate" :max="maxDate" />
-            <v-text-field
-              v-model="defenseTime"
-              type="time"
-              label="Hora da Defesa"
-              :rules="[validateTime]"
-            />
             <v-btn
               @click="scheduleDefense"
               color="primary"
-              :disabled="!defenseDate || !defenseTime"
+              :disabled="!defenseDate"
             >
               Agendar Defesa
             </v-btn>
@@ -80,7 +74,6 @@ const defenseId = route.params.id
 const currentStep = ref(1)
 const steps = ['Defesa Agendada', 'Em Revisão', 'Submetido ao Fenix']
 const defenseDate = ref(null)
-const defenseTime = ref(null)
 const finalGrade = ref(null)
 
 const isGradeValid = computed(() => {
@@ -97,38 +90,19 @@ function validateGrade(value) {
 }
 
 async function scheduleDefense() {
-  if (defenseDate.value && defenseTime.value) {
+  if (defenseDate.value ) {
     const isoDate = defenseDate.value.toISOString().split('T')[0]
-    const dateTimeString = `${isoDate}T${defenseTime.value}:00`
 
-    const dateTime = new Date(dateTimeString)
+    // const formattedDate = new Intl.DateTimeFormat('en-US', {
+    //   weekday: 'numeric',
+    //   year: 'numeric',
+    //   month: 'numeric',
+    //   day: 'numeric'
+    // }).format(defenseDate.value)
 
-    if (isNaN(dateTime.getTime())) {
-      alert('Data/hora inválida! Verifique os valores.')
-      return
-    }
-
-    if (dateTime < new Date()) {
-      alert('Data/hora inválida! A data/hora deve ser futura.')
-      return
-    }
-
-    const formattedDate = new Intl.DateTimeFormat('pt-PT', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    }).format(dateTime)
-
-    const formattedTime = new Intl.DateTimeFormat('pt-PT', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false
-    }).format(dateTime)
-
-    alert(`Defesa agendada para ${formattedDate} às ${formattedTime}`)
+    alert(`Defesa agendada para ${isoDate}`)
     try {
-      await RemoteService.scheduleDefense(defenseId, dateTimeString)
+      await RemoteService.scheduleDefense(defenseId, isoDate)
       currentStep.value = 2
     } catch (error) {
       console.error('Error scheduling defense:', error)
