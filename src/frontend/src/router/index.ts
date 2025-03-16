@@ -48,6 +48,10 @@ const router = createRouter({
       component: () => import('@/views/thesis/jury_selection/ThesisJurySelectionView.vue')
     },
     {
+      path: '/profile/:id',
+      component: () => import('@/views/profile/ProfileView.vue')
+    },
+    {
       path: '/403',
       name: 'forbidden',
       component: () => import('@/components/errors/Error403.vue')
