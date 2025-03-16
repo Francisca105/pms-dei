@@ -120,10 +120,12 @@ import { ref, onMounted } from 'vue'
 import RemoteService from '@/services/RemoteService'
 import type ThesisWorkflowDto from '@/models/thesis/ThesisWorkflowDto'
 import type PersonDto from '@/models/person/PersonDto'
+import { useRouter } from 'vue-router'
 
 const dialog = ref(false)
 const students = ref<PersonDto[]>([])
 const emit = defineEmits(['thesis-created'])
+const router = useRouter()
 
 const newThesis = ref<ThesisWorkflowDto>({
   student: null
@@ -139,7 +141,9 @@ const saveThesis = async () => {
       alert('Estudante é obrigatório')
       return
     }
-    await RemoteService.createThesis(newThesis.value.student)
+    let thesis = await RemoteService.createThesis(newThesis.value.student)
+    router.push(`/thesis/${thesis.id}/jury`)
+
     dialog.value = false
     newThesis.value = {
       student: null

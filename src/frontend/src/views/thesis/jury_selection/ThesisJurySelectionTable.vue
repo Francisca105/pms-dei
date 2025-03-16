@@ -39,8 +39,9 @@
 import type PeopleDto from '@/models/PeopleDto'
 import RemoteService from '@/services/RemoteService'
 import { reactive, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
+const router = useRouter()
 const route = useRoute()
 const thesisId = route.params.id
 const search = ref('')
@@ -93,11 +94,10 @@ const fuzzySearch = (value: string, search: string) => {
 async function submitProposal() {
   const teachers = selectedTeachers.value
 
-  console.log('Submitting proposal:', teachers)
-
   try {
     await RemoteService.submitThesisProposal(thesisId, teachers)
     selectedTeachers.value = []
+    router.push(`/thesis/jury`)
   } catch (error) {
     console.error(error)
   }
