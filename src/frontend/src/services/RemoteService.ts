@@ -116,31 +116,33 @@ export default class RemoteServices {
     return httpClient.delete(`/thesis/${id}`)
   }
 
-  static async submitProposal(id: number, juryIds: number[]): Promise<AxiosResponse<ThesisWorkflowDto>> {
+  static async submitThesisProposal(
+    id: number,
+    juryIds: number[]
+  ): Promise<AxiosResponse<ThesisWorkflowDto>> {
     return httpClient.post(`/thesis/${id}/submit-proposal`, juryIds)
   }
 
-  static async approveProposal(id: number): Promise<AxiosResponse<ThesisWorkflowDto>> {
+  static async approveThesisProposal(id: number): Promise<AxiosResponse<ThesisWorkflowDto>> {
     return httpClient.post(`/thesis/${id}/approve-proposal`)
   }
 
-  static async assignPresident(id: number, presidentId: number): Promise<AxiosResponse<ThesisWorkflowDto>> {
+  static async assignThesisPresident(
+    id: number,
+    presidentId: number
+  ): Promise<AxiosResponse<ThesisWorkflowDto>> {
     return httpClient.post(`/thesis/${id}/assign-president/${presidentId}`)
   }
 
-  static async signDocument(id: number, documentDto: ThesisDocumentDto): Promise<AxiosResponse<ThesisWorkflowDto>> {
+  static async signThesisDocument(
+    id: number,
+    documentDto: ThesisDocumentDto
+  ): Promise<AxiosResponse<ThesisWorkflowDto>> {
     return httpClient.post(`/thesis/${id}/sign-document`, documentDto)
   }
 
-  static async submitToFenix(id: number): Promise<AxiosResponse<ThesisWorkflowDto>> {
+  static async submitThesisToFenix(id: number): Promise<AxiosResponse<ThesisWorkflowDto>> {
     return httpClient.post(`/thesis/${id}/submit-fenix`)
-  }
-  
-  static async submitThesisProposal(
-    thesisId: number,
-    juryIds: number[]
-  ): Promise<AxiosResponse<void>> {
-    return httpClient.post(`/thesis/${thesisId}/submit-proposal`, juryIds)
   }
 
   static async errorMessage(error: any): Promise<string> {
