@@ -116,6 +116,13 @@ export default class RemoteServices {
     return httpClient.delete(`/thesis/${id}`)
   }
 
+  static async setThesisState(
+    id: number,
+    state: string
+  ): Promise<AxiosResponse<ThesisWorkflowDto>> {
+    return httpClient.post(`/thesis/${id}/set-state/${state}`)
+  }
+
   static async submitThesisProposal(
     id: number,
     juryIds: number[]
