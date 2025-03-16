@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <!-- Cartão fixo com os detalhes da tese -->
+
     <v-card v-if="defenseDetails" class="mb-4" flat>
       <v-card-title>Detalhes da Tese</v-card-title>
       <v-card-text>
@@ -118,7 +118,7 @@ async function onNext(next) {
         await submitToFenix()
         break
     }
-    next() // Só avança se a ação for bem sucedida
+    next()
   } catch (error) {
     console.error('Erro na transição:', error)
     alert('Erro ao processar a ação')
@@ -126,24 +126,25 @@ async function onNext(next) {
 }
 
 async function onPrev(prev) {
-  switch (currentStep.value) {
-    case 1:
-      console.log('prev1')
-      let response1 = await RemoteService.defenseSetState(defenseId, DefenseState.NOT_SCHEDULED)
-      console.log(response1)
-      break
-    case 2:
-      console.log('prev2')
-      let response2 = await RemoteService.defenseSetState(defenseId, DefenseState.NOT_SCHEDULED)
-      console.log(response2)
-      break
-    case 3:
-      console.log('prev3')
-      let response3 = await RemoteService.defenseSetState(defenseId, DefenseState.UNDER_REVIEW)
-      console.log(response3)
-      break
+  try {
+    switch (currentStep.value) {
+      case 1:
+        await RemoteService.defenseSetState(defenseId, DefenseState.NOT_SCHEDULED)
+        break
+      case 2:
+        await RemoteService.defenseSetState(defenseId, DefenseState.NOT_SCHEDULED)
+        break
+      case 3:
+        await RemoteService.defenseSetState(defenseId, DefenseState.UNDER_REVIEW)
+        break
+    }
+    
+    await fetchDefenseDetails()
+    prev()
+  } catch (error) {
+    console.error('Erro ao retroceder:', error)
+    alert('Erro ao retroceder')
   }
-  prev()
 }
 
 const isGradeValid = computed(() => {
@@ -191,13 +192,10 @@ const maxDate = new Date(new Date().setFullYear(new Date().getFullYear() + 1))
   .toISOString()
   .split('T')[0]
 
-// Função para buscar os detalhes da defesa
 async function fetchDefenseDetails() {
   try {
     const response = await RemoteService.getDefenseById(defenseId)
     defenseDetails.value = response
-    console.log('Detalhes da defesa:', response)
-    // Atualiza o estado atual com base no estado da defesa
     switch (defenseDetails.value.state) {
       case DefenseState.SCHEDULED_DEFENSE:
         currentStep.value = 1
@@ -216,7 +214,6 @@ async function fetchDefenseDetails() {
   }
 }
 
-// Busca os detalhes da defesa ao carregar a página
 onMounted(() => {
   fetchDefenseDetails()
 })
