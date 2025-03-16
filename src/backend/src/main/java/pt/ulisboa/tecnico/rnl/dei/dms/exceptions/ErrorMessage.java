@@ -25,6 +25,7 @@ public enum ErrorMessage {
 	THESIS_DOCUMENT_INVALID_DATE("A data de submissão do documento da tese não é válida.", 2024),
 	THESIS_STATE_CHANGE_BLOCKED("A mudança de estado da tese não é possível.", 2025),
 	THESIS_USER_ALREADY_HAS_THESIS("O utilizador já tem uma tese associada.", 2028),
+	FILE_UPLOAD_ERROR("Ocorreu um erro ao fazer upload do ficheiro.\n%s", 2029),
 
 
 	DEFENSE_GRADE_SUBMISSION_ERROR("A submissão da nota da defesa não é válida.", 3001),

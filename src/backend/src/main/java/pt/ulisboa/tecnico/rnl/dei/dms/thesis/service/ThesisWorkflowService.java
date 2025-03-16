@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.rnl.dei.dms.thesis.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import pt.ulisboa.tecnico.rnl.dei.dms.defense.domain.DefenseWorkflow;
 import pt.ulisboa.tecnico.rnl.dei.dms.defense.dto.DefenseWorkflowDTO;
@@ -18,6 +19,7 @@ import pt.ulisboa.tecnico.rnl.dei.dms.thesis.dto.ThesisDocumentDto;
 import pt.ulisboa.tecnico.rnl.dei.dms.thesis.dto.ThesisWorkflowDto;
 import pt.ulisboa.tecnico.rnl.dei.dms.thesis.repository.ThesisWorkflowRepository;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -107,9 +109,14 @@ public class ThesisWorkflowService {
         return convertToDto(thesisWorkflowRepository.save(thesisWorkflow));
     }
 
-    public ThesisWorkflowDto signDocument(Long id, ThesisDocumentDto documentDto) {
+    public ThesisWorkflowDto signDocument(Long id, MultipartFile file) {
         ThesisWorkflow thesisWorkflow = getThesisWorkflowEntity(id);
-        ThesisDocument document = new ThesisDocument(documentDto.getContent(), documentDto.getName(), thesisWorkflow);
+        ThesisDocument document;
+        try {
+            document = new ThesisDocument(file.getBytes(), file.getOriginalFilename(), thesisWorkflow);
+        } catch (IOException e) {
+            throw new DEIException(ErrorMessage.FILE_UPLOAD_ERROR, e.toString());
+        }
         document.setUploadDate(LocalDate.now());
         thesisWorkflow.signDocument(document);
         return convertToDto(thesisWorkflowRepository.save(thesisWorkflow));

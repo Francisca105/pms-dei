@@ -51,6 +51,7 @@ public class DefenseWorkflowController {
 
     @PostMapping("/{id}/schedule")
     public DefenseWorkflowDTO scheduleDefense(@PathVariable Long id, @RequestBody LocalDate date) {
+        System.out.println("Scheduling defense for id: " + id + " on date: " + date);
         return defenseWorkflowService.scheduleDefense(id, date);
     }
 

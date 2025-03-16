@@ -1,12 +1,14 @@
 package pt.ulisboa.tecnico.rnl.dei.dms.thesis;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import pt.ulisboa.tecnico.rnl.dei.dms.thesis.domain.ThesisWorkflow;
 import pt.ulisboa.tecnico.rnl.dei.dms.thesis.dto.ThesisDocumentDto;
 import pt.ulisboa.tecnico.rnl.dei.dms.thesis.dto.ThesisWorkflowDto;
 import pt.ulisboa.tecnico.rnl.dei.dms.thesis.service.ThesisWorkflowService;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -60,8 +62,8 @@ public class ThesisWorkflowController {
     }
 
     @PostMapping("/{id}/sign-document")
-    public ThesisWorkflowDto signDocument(@PathVariable Long id, @RequestBody ThesisDocumentDto documentDto) {
-        return thesisWorkflowService.signDocument(id, documentDto);
+    public ThesisWorkflowDto signDocument(@PathVariable Long id, @RequestParam(value = "file") MultipartFile document) {
+        return thesisWorkflowService.signDocument(id, document);
     }
 
     @PostMapping("/{id}/submit-fenix")
