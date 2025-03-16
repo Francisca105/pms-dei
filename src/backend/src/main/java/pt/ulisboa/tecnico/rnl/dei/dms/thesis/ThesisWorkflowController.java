@@ -69,6 +69,41 @@ public class ThesisWorkflowController {
         return thesisWorkflowService.submitToFenix(id);
     }
 
+    @GetMapping("/proposal")
+    public List<ThesisWorkflowDto> getProposals() {
+        return thesisWorkflowService.getThesisWorkflowByState(ThesisWorkflow.ThesisState.PROPOSAL_SUBMITTED);
+    }
+
+    @GetMapping("/approved")
+    public List<ThesisWorkflowDto> getApproved() {
+        return thesisWorkflowService.getThesisWorkflowByState(ThesisWorkflow.ThesisState.APPROVED_SC);
+    }
+
+    @GetMapping("/not-started")
+    public List<ThesisWorkflowDto> getNotStarted() {
+        return thesisWorkflowService.getThesisWorkflowByState(ThesisWorkflow.ThesisState.NOT_STARTED);
+    }
+
+    @GetMapping("/president-assigned")
+    public List<ThesisWorkflowDto> getPresidentAssigned() {
+        return thesisWorkflowService.getThesisWorkflowByState(ThesisWorkflow.ThesisState.PRESIDENT_ASSIGNED);
+    }
+
+    @GetMapping("/document-signed")
+    public List<ThesisWorkflowDto> getDocumentSigned() {
+        return thesisWorkflowService.getThesisWorkflowByState(ThesisWorkflow.ThesisState.DOCUMENT_SIGNED);
+    }
+
+    @GetMapping("/fenix-submitted")
+    public List<ThesisWorkflowDto> getFenixSubmitted() {
+        return thesisWorkflowService.getThesisWorkflowByState(ThesisWorkflow.ThesisState.SUBMITTED_FENIX);
+    }
+
+    @PostMapping("/{id}/set-state/{state}")
+    public ThesisWorkflowDto setState(@PathVariable Long id, @PathVariable ThesisWorkflow.ThesisState state) {
+        return thesisWorkflowService.setState(id, state);
+    }
+
     @GetMapping("/statistics")
     public Map<ThesisWorkflow.ThesisState, Long> getStatistics() {
         return thesisWorkflowService.getStatistics();
