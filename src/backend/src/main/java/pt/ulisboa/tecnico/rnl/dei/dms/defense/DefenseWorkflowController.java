@@ -40,8 +40,8 @@ public class DefenseWorkflowController {
     }
 
     @PostMapping
-    public DefenseWorkflowDTO createDefenseWorkflow(@RequestBody Long studentId) {
-        return defenseWorkflowService.createDefenseWorkflow(studentId);
+    public DefenseWorkflowDTO createDefenseWorkflow(@RequestBody Long thesisWorkflowId) {
+        return defenseWorkflowService.createDefenseWorkflow(thesisWorkflowId);
     }
 
     @DeleteMapping("/{id}")

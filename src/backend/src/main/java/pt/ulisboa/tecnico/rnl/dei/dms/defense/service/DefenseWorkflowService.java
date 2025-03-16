@@ -8,6 +8,7 @@ import pt.ulisboa.tecnico.rnl.dei.dms.defense.repository.DefenseWorkflowReposito
 import pt.ulisboa.tecnico.rnl.dei.dms.exceptions.DEIException;
 import pt.ulisboa.tecnico.rnl.dei.dms.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.rnl.dei.dms.thesis.domain.ThesisWorkflow;
+import pt.ulisboa.tecnico.rnl.dei.dms.thesis.dto.ThesisWorkflowDto;
 import pt.ulisboa.tecnico.rnl.dei.dms.thesis.service.ThesisWorkflowService;
 
 import java.time.LocalDate;
@@ -77,13 +78,13 @@ public class DefenseWorkflowService {
         return convertToDto(defenseWorkflowRepository.save(defenseWorkflow));
     }
 
-    public DefenseWorkflowDTO createDefenseWorkflow(Long studentId) {
-        ThesisWorkflow thesisWorkflow = thesisWorkflowService.getThesisWorkflowByStudentIdEntity(studentId);
-        if (thesisWorkflow == null) {
-            throw new DEIException(ErrorMessage.DEFENSE_STUDENT_THESIS_NOT_FOUND, Long.toString(studentId));
+    public DefenseWorkflowDTO createDefenseWorkflow(Long thesisId) {
+        ThesisWorkflow thesisWorkflowEntity = thesisWorkflowService.getThesisWorkflowEntity(thesisId);
+        if (thesisWorkflowEntity == null) {
+            throw new DEIException(ErrorMessage.DEFENSE_THESIS_NOT_FOUND, Long.toString(thesisId));
         }
 
-        DefenseWorkflow defenseWorkflow = new DefenseWorkflow(thesisWorkflow);
+        DefenseWorkflow defenseWorkflow = new DefenseWorkflow(thesisWorkflowEntity);
         return convertToDto(defenseWorkflowRepository.save(defenseWorkflow));
     }
 

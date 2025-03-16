@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import pt.ulisboa.tecnico.rnl.dei.dms.defense.domain.DefenseWorkflow;
+import pt.ulisboa.tecnico.rnl.dei.dms.defense.dto.DefenseWorkflowDTO;
 import pt.ulisboa.tecnico.rnl.dei.dms.defense.service.DefenseWorkflowService;
 import pt.ulisboa.tecnico.rnl.dei.dms.exceptions.DEIException;
 import pt.ulisboa.tecnico.rnl.dei.dms.exceptions.ErrorMessage;
@@ -119,10 +120,16 @@ public class ThesisWorkflowService {
         thesisWorkflow.submitToFenix();
         ThesisWorkflow saved = thesisWorkflowRepository.save(thesisWorkflow);
 
-        if (saved.getDefenseWorkflow() == null) {
+        Person student = saved.getStudent();
+        if (student == null) {
+            thesisWorkflow.getStudent();
+        }
+
+        DefenseWorkflowDTO existingDefenseWorkflow = defenseWorkflowService.getDefenseWorkflowByStudentId(student.getId());
+        if (saved.getDefenseWorkflow() == null && existingDefenseWorkflow == null) {
             DefenseWorkflow defenseWorkflow = new DefenseWorkflow(saved);
-            defenseWorkflowService.createDefenseWorkflow(defenseWorkflow.getId());
             saved.setDefenseWorkflow(defenseWorkflow);
+            defenseWorkflowService.createDefenseWorkflow(student.getId());
             saved = thesisWorkflowRepository.save(saved);
         }
 
