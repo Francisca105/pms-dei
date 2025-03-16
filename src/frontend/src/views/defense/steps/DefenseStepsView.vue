@@ -1,5 +1,5 @@
 <template>
-  <div v-if="roleStore.currentRole !== 'coordinator'">
+  <div v-if="roleStore.currentRole === 'coordinator'">
     <DefenseSteps />
   </div>
   <div v-else>
