@@ -1,7 +1,6 @@
 package pt.ulisboa.tecnico.rnl.dei.dms.thesis.repository;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,5 +18,8 @@ public interface ThesisWorkflowRepository extends JpaRepository<ThesisWorkflow, 
 
     @Query("SELECT t FROM ThesisWorkflow t WHERE t.student.id = :studentId")
     ThesisWorkflow findByStudentId(Long studentId);
+
+    @Query("SELECT t FROM ThesisWorkflow t WHERE t.state = :state")
+    List<ThesisWorkflow> findByState(ThesisWorkflow.ThesisState state);
 
 }
