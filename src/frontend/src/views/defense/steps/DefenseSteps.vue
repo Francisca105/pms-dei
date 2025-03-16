@@ -167,7 +167,6 @@ async function scheduleDefense() {
     try {
       let response = await RemoteService.scheduleDefense(defenseId, isoDate)
       defenseDetails.value = response
-      console.log('Defesa agendada:', response)
       currentStep.value = 2
     } catch (error) {
       console.error('Error scheduling defense:', error)
@@ -178,13 +177,11 @@ async function scheduleDefense() {
 async function startReview() {
   let response = await RemoteService.defenseSetState(defenseId, DefenseState.UNDER_REVIEW)
   defenseDetails.value = response
-  console.log('Defesa em revisão:', response)
 }
 
 async function submitToFenix() {
   let response = await RemoteService.submitDefenseGrade(defenseId, parseFloat(finalGrade.value))
   defenseDetails.value = response
-  console.log('Defesa submetida ao Fenix:', response)
 }
 
 const minDate = new Date().toISOString().split('T')[0]

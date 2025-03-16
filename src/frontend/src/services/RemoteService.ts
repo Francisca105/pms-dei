@@ -89,7 +89,6 @@ export default class RemoteServices {
   }
 
   static async createDefense(studentId: number): Promise<AxiosResponse<number>> {
-    console.log(studentId)
     return httpClient.post('/defense', studentId)
   }
 

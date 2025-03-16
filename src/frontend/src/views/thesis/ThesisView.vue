@@ -54,7 +54,6 @@ getThesis()
 async function getThesis() {
   thesis.splice(0, thesis.length)
   thesis.push(...(await RemoteService.getThesis()))
-  console.log(thesis.values)
 }
 
 const roleStore = useRoleStore()

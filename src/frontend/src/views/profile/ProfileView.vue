@@ -196,7 +196,6 @@ async function fetchData(id) {
   try {
     const defenseResponse = await RemoteService.getDefenseByStudent(id)
     defense.value = defenseResponse
-    console.log(defense.value)
   } catch (error) {
     defense.value = null
     console.error('Erro ao carregar dados da defesa:', error)

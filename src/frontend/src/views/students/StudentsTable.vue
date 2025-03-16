@@ -168,10 +168,8 @@ async function getPeople() {
   const thesisStatuses = await RemoteService.getThesis()
   const defenseStatuses = await RemoteService.getDefense()
 
-  console.log(thesisStatuses)
-  console.log(defenseStatuses)
+  
   const studentsComplete = students.map((student) => {
-    console.log(student)
     const thesis = thesisStatuses.find((t) => t.student.id === student.id)
     const defense = defenseStatuses.find((d) => d.thesisWorkflowId === thesis?.id)
     return {
