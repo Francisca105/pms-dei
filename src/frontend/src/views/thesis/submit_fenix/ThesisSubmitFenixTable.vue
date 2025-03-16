@@ -96,7 +96,7 @@ async function getPendingTheses() {
 async function submitToFenix(thesis: ThesisDto) {
   try {
     await RemoteService.submitThesisToFenix(thesis.id)
-    getPendingTheses()
+    await getPendingTheses()
   } catch (error) {
     console.error('Error submitting thesis to Fenix:', error)
   }
