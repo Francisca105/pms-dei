@@ -161,7 +161,7 @@ export default class RemoteServices {
     id: number,
     date: string
   ): Promise<AxiosResponse<DefenseWorkflowDto>> {
-    return httpClient.post(`/defense/${id}/schedule`, { date })
+    return httpClient.post(`/defense/${id}/schedule`, date)
   }
 
   static async markDefenseUnderReview(id: number): Promise<AxiosResponse<DefenseWorkflowDto>> {
