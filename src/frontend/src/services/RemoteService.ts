@@ -129,7 +129,7 @@ export default class RemoteServices {
     id: number,
     state: string
   ): Promise<AxiosResponse<ThesisWorkflowDto>> {
-    return httpClient.post(`/thesis/${id}/set-state/${state}`)
+    return httpClient.post(`/thesis/${id}/set-state`, state)
   }
 
   static async submitThesisProposal(
