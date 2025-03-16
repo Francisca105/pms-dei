@@ -66,9 +66,7 @@
                 <v-list v-if="thesis.jury && thesis.jury.length > 0">
                   <v-list-item v-for="member in thesis.jury" :key="member.id">
                     <v-list-item-title class="text-body-2">{{ member.name }}</v-list-item-title>
-                    <v-list-item-subtitle
-                      >{{ member.type }} - {{ member.email }}</v-list-item-subtitle
-                    >
+                    <v-list-item-subtitle>{{ member.email }}</v-list-item-subtitle>
                   </v-list-item>
                 </v-list>
                 <p v-else class="text-body-2 text-medium-emphasis">
