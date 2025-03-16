@@ -46,7 +46,7 @@
       <v-card-text>
         <v-select
           v-model="selectedPresident"
-          :items="currentProposal.jury"
+          :items="currentProposal?.jury || []"
           item-title="name"
           item-value="id"
           label="Selecione o Presidente do Júri"
@@ -128,7 +128,7 @@ async function assignPresident() {
     console.log('Assigning jury president:', currentProposal.value.id, selectedPresident.value)
     await RemoteService.assignThesisPresident(currentProposal.value.id, selectedPresident.value)
     closeModal()
-    getPendingProposals() // Atualiza a lista após atribuir o presidente
+    await getPendingProposals()
   } catch (error) {
     console.error('Error assigning jury president:', error)
   }
