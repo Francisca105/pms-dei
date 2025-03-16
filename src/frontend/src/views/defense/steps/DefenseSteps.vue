@@ -26,16 +26,7 @@
       <template v-slot:item.2>
         <v-card title="Em Revisão" flat>
           <v-card-text>
-            <p>Insira a nota final do aluno:</p>
-            <v-text-field
-              v-model="finalGrade"
-              type="number"
-              label="Nota Final"
-              :rules="[validateGrade]"
-              min="0"
-              max="20"
-              step="0.1"
-            />
+            <p>A defesa está em revisão.</p>
             <v-btn @click="startReview" color="primary" :disabled="!isGradeValid">
               Iniciar Revisão
             </v-btn>
@@ -46,7 +37,16 @@
       <template v-slot:item.3>
         <v-card title="Submetido ao Fenix" flat>
           <v-card-text>
-            <p>A defesa foi concluída e a nota foi atribuída.</p>
+            <p>Insira a nota final do aluno:</p>
+            <v-text-field
+              v-model="finalGrade"
+              type="number"
+              label="Nota Final"
+              :rules="[validateGrade]"
+              min="0"
+              max="20"
+              step="0.1"
+            />
             <v-btn @click="submitToFenix" color="primary">Submeter ao Fenix</v-btn>
           </v-card-text>
         </v-card>
@@ -57,6 +57,25 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import RemoteService from '@/services/RemoteService'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
+const defenseId = route.params.id
+/*
+
+  static async scheduleDefense(id: number, date: string): Promise<AxiosResponse<DefenseWorkflowDto>> {
+    return httpClient.post(`/defense/${id}/schedule`, { date })
+  }
+
+  static async markDefenseUnderReview(id: number): Promise<AxiosResponse<DefenseWorkflowDto>> {
+    return httpClient.post(`/defense/${id}/mark-under-review`)
+  }
+
+  static async submitDefenseGrade(id: number, grade: number): Promise<AxiosResponse<DefenseWorkflowDto>> {
+    return httpClient.post(`/defense/${id}/submit-grade`, { grade })
+  }
+*/
 
 const currentStep = ref(1)
 const steps = ['Defesa Agendada', 'Em Revisão', 'Submetido ao Fenix']
@@ -77,7 +96,7 @@ function validateGrade(value) {
   return true
 }
 
-function scheduleDefense() {
+async function scheduleDefense() {
   if (defenseDate.value && defenseTime.value) {
     const isoDate = defenseDate.value.toISOString().split('T')[0]
     const dateTimeString = `${isoDate}T${defenseTime.value}:00`
@@ -108,7 +127,12 @@ function scheduleDefense() {
     }).format(dateTime)
 
     alert(`Defesa agendada para ${formattedDate} às ${formattedTime}`)
-    currentStep.value = 2
+    try {
+      await RemoteService.scheduleDefense(defenseId, dateTimeString)
+      currentStep.value = 2
+    } catch (error) {
+      console.error('Error scheduling defense:', error)
+    }
   } else {
     alert('Preencha data e hora!')
   }
