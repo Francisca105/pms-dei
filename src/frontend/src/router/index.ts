@@ -58,6 +58,11 @@ const router = createRouter({
       component: () => import('@/views/thesis/jury_president/ThesisJuryPresidentView.vue')
     },
     {
+      path: '/thesis/sign/pending',
+      name: 'sign-pending',
+      component: () => import('@/views/thesis/sign_pending/ThesisSignPendingView.vue')
+    },
+    {
       path: '/profile/:id',
       component: () => import('@/views/profile/ProfileView.vue')
     },
