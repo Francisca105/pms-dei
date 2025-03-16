@@ -23,6 +23,10 @@ export default class RemoteServices {
     return httpClient.get('/people')
   }
 
+  static async getPerson(id: number): Promise<PersonDto> {
+    return httpClient.get(`/people/${id}`)
+  }
+
   static async getStudents(): Promise<PersonDto[]> {
     return httpClient.get('/students')
   }
@@ -64,6 +68,13 @@ export default class RemoteServices {
       studentId = defaultData.studentId
     }
     return httpClient.get(`/thesis/student/${studentId}`)
+  }
+
+  static async getDefenseByStudent(studentId: number): Promise<AxiosResponse<number>> {
+    if (!studentId) {
+      studentId = defaultData.studentId
+    }
+    return httpClient.get(`/defense/student/${studentId}`)
   }
 
   static async createThesis(studentId: number): Promise<AxiosResponse<number>> {
