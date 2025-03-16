@@ -40,7 +40,7 @@ O sistema foi desenvolvido utilizando **Spring Boot** para o backend e **Vue.js*
 - [X] Logs detalhados de ações feitas no sistema
 ---
 (extras)
-- Criação de testes de domínio e serviço
+- ~~Criação de testes de domínio e serviço~~
 - Documentação (página de criação de teses)
 
 ---
