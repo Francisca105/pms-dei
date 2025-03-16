@@ -88,10 +88,21 @@
     </template>
 
     <template v-slot:[`item.actions`]="{ item }">
-      <v-btn v-if="item.thesisId" :to="`/thesis/${item.thesisId}`" variant="outlined" color="primary" class="mr-2">
+      <v-btn
+        v-if="item.thesisId"
+        :to="`/thesis/${item.thesisId}`"
+        variant="outlined"
+        color="primary"
+        class="mr-2"
+      >
         Ver Tese
       </v-btn>
-      <v-btn v-if="item.defenseId" :to="`/defense/${item.defenseId}`" variant="outlined" color="primary">
+      <v-btn
+        v-if="item.defenseId"
+        :to="`/defense/${item.defenseId}`"
+        variant="outlined"
+        color="primary"
+      >
         Ver Defesa
       </v-btn>
     </template>
