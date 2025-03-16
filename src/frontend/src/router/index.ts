@@ -48,6 +48,10 @@ const router = createRouter({
       component: () => import('@/views/thesis/jury_selection/ThesisJurySelectionView.vue')
     },
     {
+      path: '/thesis/:id',
+      component: () => import('@/views/thesis/admin/ThesisAdminView.vue')
+    },
+    {
       path: '/thesis/jury',
       name: 'jury-pending',
       component: () => import('@/views/thesis/jury_pending/ThesisJuryPendingView.vue')

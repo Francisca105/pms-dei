@@ -6,6 +6,7 @@ import type PersonDto from '@/models/PersonDto'
 import type ThesisWorkflowDto from '@/models/ThesisWorkflowDto'
 import type ThesisDocumentDto from '@/models/ThesisDocumentDto'
 import DefenseWorkflowDto, { DefenseState } from '@/models/DefenseWorkflowDto'
+import type { ThesisState } from '@/models/ThesisWorkflowDto'
 
 const httpClient = axios.create()
 httpClient.defaults.timeout = 50000
@@ -82,6 +83,10 @@ export default class RemoteServices {
 
   static async getDefenseById(defenseId: number): Promise<AxiosResponse<number>> {
     return httpClient.get(`/defense/${defenseId}`)
+  }
+
+  static async getThesisById(thesisId: number): Promise<AxiosResponse<number>> {
+    return httpClient.get(`/thesis/${thesisId}`)
   }
 
   static async createThesis(studentId: number): Promise<AxiosResponse<number>> {
@@ -183,6 +188,13 @@ export default class RemoteServices {
     state: DefenseState
   ): Promise<AxiosResponse<DefenseWorkflowDto>> {
     return httpClient.post(`/defense/${id}/set-state`, state)
+  }
+
+  static async thesisSetState(
+    id: number,
+    state: ThesisState
+  ): Promise<AxiosResponse<ThesisWorkflowDto>> {
+    return httpClient.post(`/thesis/${id}/set-state`, state)
   }
 
   static async errorMessage(error: any): Promise<string> {
