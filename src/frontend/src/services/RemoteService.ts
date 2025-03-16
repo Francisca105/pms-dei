@@ -3,6 +3,8 @@ import type { AxiosResponse } from 'axios'
 import { useAppearanceStore } from '@/stores/appearance'
 import DeiError from '@/models/DeiError'
 import type PersonDto from '@/models/PersonDto'
+import type ThesisWorkflowDto from '@/models/ThesisWorkflowDto'
+import type ThesisDocumentDto from '@/models/ThesisDocumentDto'
 
 const httpClient = axios.create()
 httpClient.defaults.timeout = 50000
@@ -86,6 +88,54 @@ export default class RemoteServices {
     return httpClient.post('/defense', studentId)
   }
 
+  static async getThesisProposals(): Promise<AxiosResponse<ThesisWorkflowDto[]>> {
+    return httpClient.get('/thesis/proposal')
+  }
+
+  static async getThesisApproved(): Promise<AxiosResponse<ThesisWorkflowDto[]>> {
+    return httpClient.get('/thesis/approved')
+  }
+
+  static async getThesisNotStarted(): Promise<AxiosResponse<ThesisWorkflowDto[]>> {
+    return httpClient.get('/thesis/not-started')
+  }
+
+  static async getThesisPresidentAssigned(): Promise<AxiosResponse<ThesisWorkflowDto[]>> {
+    return httpClient.get('/thesis/president-assigned')
+  }
+
+  static async getThesisDocumentSigned(): Promise<AxiosResponse<ThesisWorkflowDto[]>> {
+    return httpClient.get('/thesis/document-signed')
+  }
+
+  static async getThesisFenixSubmitted(): Promise<AxiosResponse<ThesisWorkflowDto[]>> {
+    return httpClient.get('/thesis/fenix-submitted')
+  }
+
+  static async deleteThesisWorkflow(id: number): Promise<AxiosResponse<void>> {
+    return httpClient.delete(`/thesis/${id}`)
+  }
+
+  static async submitProposal(id: number, juryIds: number[]): Promise<AxiosResponse<ThesisWorkflowDto>> {
+    return httpClient.post(`/thesis/${id}/submit-proposal`, juryIds)
+  }
+
+  static async approveProposal(id: number): Promise<AxiosResponse<ThesisWorkflowDto>> {
+    return httpClient.post(`/thesis/${id}/approve-proposal`)
+  }
+
+  static async assignPresident(id: number, presidentId: number): Promise<AxiosResponse<ThesisWorkflowDto>> {
+    return httpClient.post(`/thesis/${id}/assign-president/${presidentId}`)
+  }
+
+  static async signDocument(id: number, documentDto: ThesisDocumentDto): Promise<AxiosResponse<ThesisWorkflowDto>> {
+    return httpClient.post(`/thesis/${id}/sign-document`, documentDto)
+  }
+
+  static async submitToFenix(id: number): Promise<AxiosResponse<ThesisWorkflowDto>> {
+    return httpClient.post(`/thesis/${id}/submit-fenix`)
+  }
+  
   static async submitThesisProposal(
     thesisId: number,
     juryIds: number[]
