@@ -134,6 +134,19 @@ public class ThesisWorkflowService {
                 .orElseThrow(() -> new DEIException(ErrorMessage.THESIS_NOT_FOUND, Long.toString(id)));
     }
 
+    public List<ThesisWorkflowDto> getThesisWorkflowByState(ThesisWorkflow.ThesisState state) {
+        return thesisWorkflowRepository.findByState(state).stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    public ThesisWorkflowDto setState(Long id, ThesisWorkflow.ThesisState state) {
+        ThesisWorkflow thesisWorkflow = getThesisWorkflowEntity(id);
+        thesisWorkflow.setState(state);
+        thesisWorkflowRepository.save(thesisWorkflow);
+        return new ThesisWorkflowDto(thesisWorkflow);
+    }
+
     public Map<ThesisWorkflow.ThesisState, Long> getStatistics() {
         ThesisWorkflow.ThesisState[] allStates = ThesisWorkflow.ThesisState.values();
 
