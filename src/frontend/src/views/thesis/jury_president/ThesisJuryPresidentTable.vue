@@ -130,9 +130,9 @@ async function assignPresident() {
 
   try {
     await RemoteService.assignThesisPresident(currentProposal.value.id, selectedPresident.value)
-    
-    roleStore.currentRole = 'coordinator'
-    router.push(`/thesis/sign/pending`)
+    // For testing:
+    // roleStore.currentRole = 'coordinator'
+    // router.push(`/thesis/sign/pending`)
 
     closeModal()
     await getPendingProposals()
