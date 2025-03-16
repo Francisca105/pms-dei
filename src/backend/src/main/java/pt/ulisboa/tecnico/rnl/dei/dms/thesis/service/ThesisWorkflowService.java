@@ -10,6 +10,9 @@ import pt.ulisboa.tecnico.rnl.dei.dms.defense.dto.DefenseWorkflowDTO;
 import pt.ulisboa.tecnico.rnl.dei.dms.defense.service.DefenseWorkflowService;
 import pt.ulisboa.tecnico.rnl.dei.dms.exceptions.DEIException;
 import pt.ulisboa.tecnico.rnl.dei.dms.exceptions.ErrorMessage;
+import pt.ulisboa.tecnico.rnl.dei.dms.logs.domain.Logs.LogType;
+import pt.ulisboa.tecnico.rnl.dei.dms.logs.dto.LogsDto;
+import pt.ulisboa.tecnico.rnl.dei.dms.logs.service.LogsService;
 import pt.ulisboa.tecnico.rnl.dei.dms.person.domain.Person;
 import pt.ulisboa.tecnico.rnl.dei.dms.person.dto.PersonDto;
 import pt.ulisboa.tecnico.rnl.dei.dms.person.service.PersonService;
@@ -33,6 +36,9 @@ public class ThesisWorkflowService {
     private final DefenseWorkflowService defenseWorkflowService;
 
     @Autowired
+    private LogsService logsService;
+
+    @Autowired
     public ThesisWorkflowService(ThesisWorkflowRepository thesisWorkflowRepository,
                                  PersonService personService,
                                  @Lazy DefenseWorkflowService defenseWorkflowService) {
@@ -42,39 +48,48 @@ public class ThesisWorkflowService {
     }
 
     public List<ThesisWorkflowDto> getAllThesisWorkflows() {
+        logsService.createLog(new LogsDto(LogType.INFO, "Fetching all thesis workflows"));
         return thesisWorkflowRepository.findAll().stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
     public ThesisWorkflowDto getThesisWorkflowById(Long id) {
+        logsService.createLog(new LogsDto(LogType.INFO, "Fetching thesis workflow by ID: " + id));
         return convertToDto(thesisWorkflowRepository.findById(id)
                 .orElseThrow(() -> new DEIException(ErrorMessage.THESIS_NOT_FOUND, Long.toString(id))));
     }
 
     public ThesisWorkflowDto getThesisWorkflowByStudentId(Long studentId) {
+        logsService.createLog(new LogsDto(LogType.INFO, "Fetching thesis workflow by student ID: " + studentId));
         ThesisWorkflow thesisWorkflow = thesisWorkflowRepository.findByStudentId(studentId);
         if (thesisWorkflow == null) {
+            logError("Tried to fetch thesis workflow with non-existent student ID: " + studentId);
             return null;
         }
         return convertToDto(thesisWorkflow);
     }
 
     public ThesisWorkflow getThesisWorkflowByStudentIdEntity(Long studentId) {
+        logsService.createLog(new LogsDto(LogType.INFO, "Fetching thesis workflow entity by student ID: " + studentId));
         ThesisWorkflow thesisWorkflow = thesisWorkflowRepository.findByStudentId(studentId);
         if (thesisWorkflow == null) {
+            logError("Tried to fetch thesis workflow entity with non-existent student ID: " + studentId);
             return null;
         }
         return thesisWorkflow;
     }
 
     public ThesisWorkflowDto createThesisWorkflow(Long studentId) {
+        logsService.createLog(new LogsDto(LogType.INFO, "Creating thesis workflow for student ID: " + studentId));
         Person student = personService.getPersonById(studentId);
         if (student.getType() != Person.PersonType.STUDENT) {
+            logError("Tried to create thesis workflow for non-student ID: " + studentId);
             throw new DEIException(ErrorMessage.THESIS_SUBMISSION_NOT_STUDENT);
         }
 
         if(getThesisWorkflowByStudentId(studentId) != null) {
+            logError("Tried to create thesis workflow for student ID that already has a thesis: " + studentId);
             throw new DEIException(ErrorMessage.THESIS_USER_ALREADY_HAS_THESIS);
         }
 
@@ -83,10 +98,12 @@ public class ThesisWorkflowService {
     }
 
     public void deleteThesisWorkflow(Long id) {
+        logsService.createLog(new LogsDto(LogType.INFO, "Deleting thesis workflow with ID: " + id));
         thesisWorkflowRepository.deleteById(id);
     }
 
     public ThesisWorkflowDto submitProposal(Long id, List<Long> juryIds) {
+        logsService.createLog(new LogsDto(LogType.INFO, "Submitting proposal for thesis workflow ID: " + id));
         ThesisWorkflow thesisWorkflow = getThesisWorkflowEntity(id);
         List<Person> jury = juryIds.stream()
             .map(juryId -> personService.getPersonById(juryId))
@@ -97,12 +114,14 @@ public class ThesisWorkflowService {
     }
 
     public ThesisWorkflowDto approveProposal(Long id) {
+        logsService.createLog(new LogsDto(LogType.INFO, "Approving proposal for thesis workflow ID: " + id));
         ThesisWorkflow thesisWorkflow = getThesisWorkflowEntity(id);
         thesisWorkflow.approveProposal();
         return convertToDto(thesisWorkflowRepository.save(thesisWorkflow));
     }
 
     public ThesisWorkflowDto assignPresident(Long id, Long presidentId) {
+        logsService.createLog(new LogsDto(LogType.INFO, "Assigning president for thesis workflow ID: " + id));
         ThesisWorkflow thesisWorkflow = getThesisWorkflowEntity(id);
         PersonDto president = personService.getPerson(presidentId);
         thesisWorkflow.assignPresident(president);
@@ -110,11 +129,13 @@ public class ThesisWorkflowService {
     }
 
     public ThesisWorkflowDto signDocument(Long id, MultipartFile file) {
+        logsService.createLog(new LogsDto(LogType.INFO, "Signing document for thesis workflow ID: " + id));
         ThesisWorkflow thesisWorkflow = getThesisWorkflowEntity(id);
         ThesisDocument document;
         try {
             document = new ThesisDocument(file.getBytes(), file.getOriginalFilename(), thesisWorkflow);
         } catch (IOException e) {
+            logError("Error uploading file for thesis workflow ID: " + id + ", error: " + e.toString());
             throw new DEIException(ErrorMessage.FILE_UPLOAD_ERROR, e.toString());
         }
         document.setUploadDate(LocalDate.now());
@@ -123,6 +144,7 @@ public class ThesisWorkflowService {
     }
 
     public ThesisWorkflowDto submitToFenix(Long id) {
+        logsService.createLog(new LogsDto(LogType.INFO, "Submitting to Fenix for thesis workflow ID: " + id));
         ThesisWorkflow thesisWorkflow = getThesisWorkflowEntity(id);
         thesisWorkflow.submitToFenix();
         ThesisWorkflow saved = thesisWorkflowRepository.save(thesisWorkflow);
@@ -144,17 +166,23 @@ public class ThesisWorkflowService {
     }
 
     public ThesisWorkflow getThesisWorkflowEntity(Long id) {
+        logsService.createLog(new LogsDto(LogType.INFO, "Fetching thesis workflow entity by ID: " + id));
         return thesisWorkflowRepository.findById(id)
-                .orElseThrow(() -> new DEIException(ErrorMessage.THESIS_NOT_FOUND, Long.toString(id)));
+                .orElseThrow(() -> {
+                    logError("Tried to fetch thesis workflow entity with non-existent ID: " + id);
+                    return new DEIException(ErrorMessage.THESIS_NOT_FOUND, Long.toString(id));
+                });
     }
 
     public List<ThesisWorkflowDto> getThesisWorkflowByState(ThesisWorkflow.ThesisState state) {
+        logsService.createLog(new LogsDto(LogType.INFO, "Fetching thesis workflows by state: " + state));
         return thesisWorkflowRepository.findByState(state).stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
     public ThesisWorkflowDto setState(Long id, ThesisWorkflow.ThesisState state) {
+        logsService.createLog(new LogsDto(LogType.INFO, "Setting state for thesis workflow ID: " + id + " to " + state));
         ThesisWorkflow thesisWorkflow = getThesisWorkflowEntity(id);
         thesisWorkflow.setState(state);
         thesisWorkflowRepository.save(thesisWorkflow);
@@ -162,6 +190,7 @@ public class ThesisWorkflowService {
     }
 
     public Map<ThesisWorkflow.ThesisState, Long> getStatistics() {
+        logsService.createLog(new LogsDto(LogType.INFO, "Fetching thesis workflow statistics"));
         ThesisWorkflow.ThesisState[] allStates = ThesisWorkflow.ThesisState.values();
 
         Map<ThesisWorkflow.ThesisState, Long> statistics = new HashMap<>();
@@ -191,5 +220,10 @@ public class ThesisWorkflowService {
         dto.setSignedDocument(thesisWorkflow.getSignedDocument() != null ? 
                 new ThesisDocumentDto(thesisWorkflow.getSignedDocument()) : null);
         return dto;
+    }
+
+    private void logError(String message) {
+        LogsDto log = new LogsDto(LogType.ERROR, message);
+        logsService.createLog(log);
     }
 }
