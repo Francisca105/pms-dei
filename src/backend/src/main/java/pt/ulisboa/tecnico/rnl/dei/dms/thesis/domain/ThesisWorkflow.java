@@ -87,7 +87,7 @@ public class ThesisWorkflow {
         setState(ThesisState.APPROVED_SC);
     }
 
-    public void assignPresident(Person president) {
+    public void assignPresident(PersonDto president) {
         if (!getState().equals(ThesisState.APPROVED_SC)) {
             throw new DEIException(ErrorMessage.THESIS_PRESIDENT_INVALID_STATE);
         }
@@ -168,7 +168,11 @@ public class ThesisWorkflow {
     }
 
     public void setPresident(Person president) {
-        if (president != null && !getJury().contains(president)) {
+        System.out.println("setPresident");
+        System.out.println(president);
+        System.out.println(getJury());
+        System.out.println(getJury().stream().noneMatch(member -> member.getId().equals(president.getId())));
+        if (president != null && (getJury() == null || getJury().stream().noneMatch(member -> member.getId().equals(president.getId())))) {
             throw new DEIException(ErrorMessage.THESIS_PRESIDENT_NOT_IN_JURY);
         }
         this.president = president;

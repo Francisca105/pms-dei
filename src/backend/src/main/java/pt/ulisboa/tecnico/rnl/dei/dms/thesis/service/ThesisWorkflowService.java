@@ -101,7 +101,7 @@ public class ThesisWorkflowService {
 
     public ThesisWorkflowDto assignPresident(Long id, Long presidentId) {
         ThesisWorkflow thesisWorkflow = getThesisWorkflowEntity(id);
-        Person president = new Person(personService.getPerson(presidentId));
+        PersonDto president = personService.getPerson(presidentId);
         thesisWorkflow.assignPresident(president);
         return convertToDto(thesisWorkflowRepository.save(thesisWorkflow));
     }
