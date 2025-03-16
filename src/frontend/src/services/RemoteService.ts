@@ -145,7 +145,29 @@ export default class RemoteServices {
     id: number,
     documentDto: ThesisDocumentDto
   ): Promise<AxiosResponse<ThesisWorkflowDto>> {
-    return httpClient.post(`/thesis/${id}/sign-document`, documentDto)
+    if (!documentDto) {
+      const filePath = '../../public/DocumentoOficial.pdf';
+
+      try {
+          const response = await fetch(filePath);
+          if (!response.ok) {
+              throw new Error('Failed to load PDF file');
+          }
+
+          const fileContent = await response.arrayBuffer();
+          const contentArray = Array.from(new Uint8Array(fileContent));
+
+          documentDto = {
+              content: contentArray,
+              name: 'default-document.pdf',
+              uploadDate: new Date().toISOString()
+          };
+      } catch (error) {
+          console.error('Error loading PDF file:', error);
+          throw new Error('Failed to load PDF file');
+      }
+  }
+  return httpClient.post(`/thesis/${id}/sign-document`, documentDto);
   }
 
   static async submitThesisToFenix(id: number): Promise<AxiosResponse<ThesisWorkflowDto>> {
