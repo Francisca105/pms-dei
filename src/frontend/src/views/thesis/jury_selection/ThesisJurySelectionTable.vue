@@ -99,8 +99,11 @@ async function submitProposal() {
   try {
     await RemoteService.submitThesisProposal(thesisId, teachers)
     selectedTeachers.value = []
-    roleStore.currentRole = 'admin'
-    router.push(`/thesis/jury`)
+    // For testing:
+    // roleStore.currentRole = 'admin'
+    // router.push(`/thesis/jury`)
+
+    router.push(`/`)
   } catch (error) {
     console.error(error)
   }
