@@ -86,6 +86,15 @@
       </v-chip>
       <v-chip v-else color="grey" text-color="white"> Sem Defesa </v-chip>
     </template>
+
+    <template v-slot:[`item.actions`]="{ item }">
+      <v-btn v-if="item.thesisId" :to="`/thesis/${item.thesisId}`" variant="outlined" color="primary" class="mr-2">
+        Ver Tese
+      </v-btn>
+      <v-btn v-if="item.defenseId" :to="`/defense/${item.defenseId}`" variant="outlined" color="primary">
+        Ver Defesa
+      </v-btn>
+    </template>
   </v-data-table>
 </template>
 
@@ -122,7 +131,8 @@ const headers = [
   { title: 'IST ID', key: 'istId', sortable: true },
   { title: 'Email', key: 'email', sortable: true },
   { title: 'Estado da Tese', key: 'thesisStatus', sortable: true },
-  { title: 'Estado da Defesa', key: 'defenseStatus', sortable: true }
+  { title: 'Estado da Defesa', key: 'defenseStatus', sortable: true },
+  { title: 'Ações', key: 'actions', sortable: false }
 ]
 
 let people: PeopleDto[] = reactive([])
@@ -147,11 +157,16 @@ async function getPeople() {
   const thesisStatuses = await RemoteService.getThesis()
   const defenseStatuses = await RemoteService.getDefense()
 
+  console.log(thesisStatuses)
+  console.log(defenseStatuses)
   const studentsComplete = students.map((student) => {
+    console.log(student)
     const thesis = thesisStatuses.find((t) => t.student.id === student.id)
-    const defense = defenseStatuses.find((d) => d.student.id === student.id)
+    const defense = defenseStatuses.find((d) => d.thesisWorkflowId === thesis?.id)
     return {
       ...student,
+      thesisId: thesis?.id || null,
+      defenseId: defense?.id || null,
       thesisStatus: thesis ? thesis.state : 'Sem Tese',
       defenseStatus: defense ? defense.state : 'Sem Defesa'
     }
