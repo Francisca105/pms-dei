@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import ThesisWorkflowDto, {ThesisState} from '@/models/ThesisWorkflowDto'
+import ThesisWorkflowDto, { ThesisState } from '@/models/ThesisWorkflowDto'
 import RemoteService from '@/services/RemoteService'
 import { reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
