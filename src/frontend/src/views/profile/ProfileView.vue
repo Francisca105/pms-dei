@@ -80,22 +80,52 @@
                 <p class="text-caption text-medium-emphasis">Presidente</p>
                 <v-list v-if="thesis.president">
                   <v-list-item>
-                    <template v-slot:prepend>
-                      <v-avatar color="grey-lighten-3" size="36">
-                        <v-icon color="grey">mdi-account-check</v-icon>
-                      </v-avatar>
-                    </template>
                     <v-list-item-title class="text-body-2">{{
                       thesis.president.name
                     }}</v-list-item-title>
-                    <v-list-item-subtitle
-                      >{{ thesis.president.type }} -
-                      {{ thesis.president.email }}</v-list-item-subtitle
-                    >
+                    <v-list-item-subtitle>{{ thesis.president.email }}</v-list-item-subtitle>
                   </v-list-item>
                 </v-list>
                 <p v-else class="text-body-2 text-medium-emphasis">
                   O presidente do júri ainda não foi escolhido
+                </p>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </template>
+
+      <template v-if="defense">
+        <v-card>
+          <v-card-title>
+            <div>
+              <h3 class="text-h6">Informação da Defesa</h3>
+              <p class="text-subtitle-2 text-white text-opacity-80">
+                Detalhes sobre a defesa da tese
+              </p>
+            </div>
+          </v-card-title>
+
+          <v-card-text>
+            <v-row>
+              <v-col cols="12" sm="6">
+                <p class="text-caption text-medium-emphasis">Estado</p>
+                <v-chip :color="getStatusClass(defense.state)" size="small" class="mt-1">
+                  {{ formatStatus(defense.state) }}
+                </v-chip>
+              </v-col>
+
+              <v-col cols="12" sm="6">
+                <p class="text-caption text-medium-emphasis">Data Agendada</p>
+                <p class="text-body-2">
+                  {{ defense.scheduledDate ? formatDate(defense.scheduledDate) : 'Não agendada' }}
+                </p>
+              </v-col>
+
+              <v-col cols="12" sm="6">
+                <p class="text-caption text-medium-emphasis">Nota</p>
+                <p class="text-body-2">
+                  {{ defense.grade ? defense.grade : 'Ainda não avaliada' }}
                 </p>
               </v-col>
             </v-row>
@@ -166,6 +196,7 @@ async function fetchData(id) {
   try {
     const defenseResponse = await RemoteService.getDefenseByStudent(id)
     defense.value = defenseResponse
+    console.log(defense.value)
   } catch (error) {
     defense.value = null
     console.error('Erro ao carregar dados da defesa:', error)
