@@ -1,3 +1,4 @@
+<!-- TODO: Pdf submit -->
 <template>
     <v-row align="center">
         <v-col>
@@ -131,7 +132,7 @@ async function signDocument() {
     if (!currentThesis.value) return
 
     try {
-        await RemoteService.signThesisDocument(currentThesis.value.id)
+        await RemoteService.signThesisDocument(currentThesis.value.id, null)
         closeSignModal()
         getPendingTheses()
     } catch (error) {
