@@ -2,6 +2,7 @@ import PersonDto from './PersonDto'
 import ThesisDocumentDto from './ThesisDocumentDto'
 
 export enum ThesisState {
+  NOT_STARTED = 'NOT_STARTED',
   PROPOSAL_SUBMITTED = 'PROPOSAL_SUBMITTED',
   APPROVED_SC = 'APPROVED_SC',
   PRESIDENT_ASSIGNED = 'PRESIDENT_ASSIGNED',
