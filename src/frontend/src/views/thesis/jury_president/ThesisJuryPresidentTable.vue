@@ -125,7 +125,6 @@ async function assignPresident() {
   if (!currentProposal.value || !selectedPresident.value) return
 
   try {
-    console.log('Assigning jury president:', currentProposal.value.id, selectedPresident.value)
     await RemoteService.assignThesisPresident(currentProposal.value.id, selectedPresident.value)
     closeModal()
     await getPendingProposals()
