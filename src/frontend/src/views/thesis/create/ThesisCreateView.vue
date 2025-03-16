@@ -121,6 +121,9 @@ import RemoteService from '@/services/RemoteService'
 import type ThesisWorkflowDto from '@/models/thesis/ThesisWorkflowDto'
 import type PersonDto from '@/models/person/PersonDto'
 import { useRouter } from 'vue-router'
+import { useRoleStore } from '@/stores/role'
+
+const roleStore = useRoleStore()
 
 const dialog = ref(false)
 const students = ref<PersonDto[]>([])
@@ -142,6 +145,7 @@ const saveThesis = async () => {
       return
     }
     let thesis = await RemoteService.createThesis(newThesis.value.student)
+    roleStore.currentRole = 'student'
     router.push(`/thesis/${thesis.id}/jury`)
 
     dialog.value = false

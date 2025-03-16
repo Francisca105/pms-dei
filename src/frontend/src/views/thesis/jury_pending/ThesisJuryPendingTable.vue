@@ -36,7 +36,9 @@ import ThesisWorkflowDto, { ThesisState } from '@/models/ThesisWorkflowDto'
 import RemoteService from '@/services/RemoteService'
 import { reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useRoleStore } from '@/stores/role'
 
+const roleStore = useRoleStore()
 const route = useRoute()
 const router = useRouter()
 const search = ref('')
@@ -95,6 +97,7 @@ async function approveProposal(proposal: ThesisWorkflowDto) {
   try {
     await RemoteService.approveThesisProposal(proposal.id)
     proposal.state = 'Aprovado pelo SC'
+    roleStore.currentRole = 'coordinator'
     router.push(`/thesis/jury/president`)
   } catch (error) {
     console.error('Error approving proposal:', error)

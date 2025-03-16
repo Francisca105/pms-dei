@@ -40,7 +40,9 @@ import type PeopleDto from '@/models/PeopleDto'
 import RemoteService from '@/services/RemoteService'
 import { reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useRoleStore } from '@/stores/role'
 
+const roleStore = useRoleStore()
 const router = useRouter()
 const route = useRoute()
 const thesisId = route.params.id
@@ -97,6 +99,7 @@ async function submitProposal() {
   try {
     await RemoteService.submitThesisProposal(thesisId, teachers)
     selectedTeachers.value = []
+    roleStore.currentRole = 'admin'
     router.push(`/thesis/jury`)
   } catch (error) {
     console.error(error)
