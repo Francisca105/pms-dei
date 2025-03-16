@@ -60,8 +60,8 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import {ThesisState} from '@/models/ThesisWorkflowDto'
-import {DefenseState} from '@/models/DefenseWorkflowDto'
+import { ThesisState } from '@/models/ThesisWorkflowDto'
+import { DefenseState } from '@/models/DefenseWorkflowDto'
 import RemoteService from '@/services/RemoteService'
 
 const thesisProgress = ref({})
@@ -74,49 +74,49 @@ const stateMapping_Thesis = {
   [ThesisState.DOCUMENT_SIGNED]: 'Document Signed',
   [ThesisState.SUBMITTED_FENIX]: 'Submitted to Fenix',
   [ThesisState.NOT_STARTED]: 'Not Started'
-};
+}
 
 const stateMapping_Defense = {
   [DefenseState.SCHEDULED_DEFENSE]: 'Defense Scheduled',
   [DefenseState.UNDER_REVIEW]: 'Defense Under Review',
-  [DefenseState.SUBMITTED_FENIX]: 'Submitted to Fenix',
-};
+  [DefenseState.SUBMITTED_FENIX]: 'Submitted to Fenix'
+}
 
 onMounted(async () => {
   // Fetch thesis statistics
   try {
-    const data = await RemoteService.getThesisStatistics();
-    const mappedData = {};
+    const data = await RemoteService.getThesisStatistics()
+    const mappedData = {}
 
     for (const [state, count] of Object.entries(data)) {
-      const label = stateMapping_Thesis[state];
+      const label = stateMapping_Thesis[state]
       if (label) {
-        mappedData[label] = count;
+        mappedData[label] = count
       }
     }
 
-    thesisProgress.value = mappedData;
+    thesisProgress.value = mappedData
   } catch (error) {
-    console.error('Failed to fetch thesis statistics:', error);
+    console.error('Failed to fetch thesis statistics:', error)
   }
 
   // Fetch defense statistics
   try {
-    const data = await RemoteService.getDefenseStatistics();
-    const mappedData = {};
+    const data = await RemoteService.getDefenseStatistics()
+    const mappedData = {}
 
     for (const [state, count] of Object.entries(data)) {
-      const label = stateMapping_Defense[state];
+      const label = stateMapping_Defense[state]
       if (label) {
-        mappedData[label] = count;
+        mappedData[label] = count
       }
     }
 
-    defenseProgress.value = mappedData;
+    defenseProgress.value = mappedData
   } catch (error) {
-    console.error('Failed to fetch thesis statistics:', error);
+    console.error('Failed to fetch thesis statistics:', error)
   }
-});
+})
 </script>
 
 <style scoped>
