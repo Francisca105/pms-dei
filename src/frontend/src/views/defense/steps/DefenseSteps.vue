@@ -1,6 +1,5 @@
 <template>
   <v-container>
-
     <v-card v-if="defenseDetails" class="mb-4" flat>
       <v-card-title>Detalhes da Tese</v-card-title>
       <v-card-text>
@@ -138,7 +137,7 @@ async function onPrev(prev) {
         await RemoteService.defenseSetState(defenseId, DefenseState.UNDER_REVIEW)
         break
     }
-    
+
     await fetchDefenseDetails()
     prev()
   } catch (error) {
