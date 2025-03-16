@@ -94,7 +94,7 @@
           </v-card-text>
         </v-card>
       </template>
-
+      <hr />
       <template v-if="defense">
         <v-card>
           <v-card-title>
