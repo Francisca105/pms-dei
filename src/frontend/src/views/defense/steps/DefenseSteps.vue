@@ -21,9 +21,6 @@
         <v-card title="Em Revisão" flat>
           <v-card-text>
             <p>A defesa está em revisão.</p>
-            <v-btn @click="startReview" color="primary" :disabled="!isGradeValid">
-              Iniciar Revisão
-            </v-btn>
           </v-card-text>
         </v-card>
       </template>
@@ -45,6 +42,25 @@
           </v-card-text>
         </v-card>
       </template>
+
+      <template v-slot:actions="{ prev, next }">
+        <div class="d-flex justify-space-between">
+          <v-btn
+            @click="onPrev(prev)"
+            :disabled="currentStep === 1"
+          >
+            Voltar
+          </v-btn>
+
+          <v-btn
+            @click="onNext(next)"
+            :disabled="isNextDisabled"
+            color="primary"
+          >
+            {{ nextButtonText }}
+          </v-btn>
+        </div>
+      </template>
     </v-stepper>
   </v-container>
 </template>
@@ -53,6 +69,7 @@
 import { ref, computed } from 'vue'
 import RemoteService from '@/services/RemoteService'
 import { useRoute } from 'vue-router'
+import { DefenseState } from '../../../models/DefenseWorkflowDto'
 
 const route = useRoute()
 const defenseId = route.params.id
@@ -76,6 +93,63 @@ const steps = ['Defesa Agendada', 'Em Revisão', 'Submetido ao Fenix']
 const defenseDate = ref(null)
 const finalGrade = ref(null)
 
+const isNextDisabled = computed(() => {
+  switch (currentStep.value) {
+    case 1: return !defenseDate.value
+    case 2: return false
+    case 3: return !isGradeValid.value
+    default: return false
+  }
+})
+
+const nextButtonText = computed(() => {
+  switch (currentStep.value) {
+    case 1: return 'Próximo (Coloca em Revisão)'
+    case 2: return 'Próximo'
+    case 3: return 'Finalizar'
+    default: return 'Próximo'
+  }
+})
+
+async function onNext(next) {
+  try {
+    switch (currentStep.value) {
+      case 1:
+        // await scheduleDefense()
+        break
+      case 2:
+        // await startReview()
+        break
+      case 3:
+        await submitToFenix()
+        break
+    }
+    next() // Só avança se a ação for bem sucedida
+  } catch (error) {
+    console.error('Erro na transição:', error)
+    alert('Erro ao processar a ação')
+  }
+}
+
+async function onPrev(prev) {
+  switch (currentStep.value) {
+    case 1:
+      console.log('prev1')
+      // await RemoteService.defenseSetState(defenseId, DefenseState.NOT_SCHEDULED)
+      break
+    case 2:
+      console.log('prev2')
+      await RemoteService.defenseSetState(defenseId, DefenseState.NOT_SCHEDULED)
+      break
+    case 3:
+      console.log('prev3')
+      await RemoteService.defenseSetState(defenseId, DefenseState.SCHEDULED_DEFENSE)
+      // await RemoteService.defenseSetState(defenseId, DefenseState.UNDER_REVIEW)
+      break
+  }
+  prev()
+}
+
 const isGradeValid = computed(() => {
   const grade = parseFloat(finalGrade.value)
   return !isNaN(grade) && grade >= 0 && grade <= 20
@@ -93,14 +167,6 @@ async function scheduleDefense() {
   if (defenseDate.value ) {
     const isoDate = defenseDate.value.toISOString().split('T')[0]
 
-    // const formattedDate = new Intl.DateTimeFormat('en-US', {
-    //   weekday: 'numeric',
-    //   year: 'numeric',
-    //   month: 'numeric',
-    //   day: 'numeric'
-    // }).format(defenseDate.value)
-
-    alert(`Defesa agendada para ${isoDate}`)
     try {
       await RemoteService.scheduleDefense(defenseId, isoDate)
       currentStep.value = 2
@@ -112,23 +178,12 @@ async function scheduleDefense() {
   }
 }
 
-function validateTime(value) {
-  const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/
-  if (!value || !timeRegex.test(value)) {
-    return 'Hora inválida (formato HH:MM)'
-  }
-  return true
+async function startReview() {
+  await RemoteService.setState(defenseId, DefenseState.UNDER_REVIEW)
 }
 
-function startReview() {
-  if (isGradeValid.value) {
-    alert(`Nota ${finalGrade.value} atribuída. Iniciando revisão...`)
-    currentStep.value = 3
-  }
-}
-
-function submitToFenix() {
-  alert('Defesa submetida ao Fenix com sucesso!')
+async function submitToFenix() {
+  await RemoteService.submitDefenseGrade(defenseId, parseFloat(finalGrade.value))
 }
 
 const minDate = new Date().toISOString().split('T')[0]

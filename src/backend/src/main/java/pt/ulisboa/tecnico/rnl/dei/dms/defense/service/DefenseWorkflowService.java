@@ -61,7 +61,9 @@ public class DefenseWorkflowService {
     }
 
     public DefenseWorkflowDTO scheduleDefense(Long id, LocalDate date) {
+        System.out.println("Scheduling defense for id: " + id + " on date: " + date);
         DefenseWorkflow defenseWorkflow = getDefenseWorkflowEntity(id);
+        System.out.println("Defense workflow: " + defenseWorkflow);
         defenseWorkflow.scheduleDefense(date);
         return convertToDto(defenseWorkflowRepository.save(defenseWorkflow));
     }
@@ -91,6 +93,12 @@ public class DefenseWorkflowService {
     private DefenseWorkflow getDefenseWorkflowEntity(Long id) {
         return defenseWorkflowRepository.findById(id)
                 .orElseThrow(() -> new DEIException(ErrorMessage.NO_SUCH_DEFENSE_WORKFLOW, Long.toString(id)));
+    }
+
+    public DefenseWorkflowDTO setState(Long id, DefenseWorkflow.DefenseState state) {
+        DefenseWorkflow defenseWorkflow = getDefenseWorkflowEntity(id);
+        defenseWorkflow.setState(state);
+        return convertToDto(defenseWorkflowRepository.save(defenseWorkflow));
     }
 
     public Map<DefenseWorkflow.DefenseState, Long> getStatistics() {

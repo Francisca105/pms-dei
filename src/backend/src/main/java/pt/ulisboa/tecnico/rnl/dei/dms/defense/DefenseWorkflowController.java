@@ -49,6 +49,11 @@ public class DefenseWorkflowController {
         defenseWorkflowService.deleteDefenseWorkflow(id);
     }
 
+    @PostMapping("/{id}/set-state")
+    public DefenseWorkflowDTO setState(@PathVariable Long id, @RequestBody DefenseWorkflow.DefenseState state) {
+        return defenseWorkflowService.setState(id, state);
+    }
+
     @PostMapping("/{id}/schedule")
     public DefenseWorkflowDTO scheduleDefense(@PathVariable Long id, @RequestBody LocalDate date) {
         System.out.println("Scheduling defense for id: " + id + " on date: " + date);

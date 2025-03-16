@@ -5,7 +5,7 @@ import DeiError from '@/models/DeiError'
 import type PersonDto from '@/models/PersonDto'
 import type ThesisWorkflowDto from '@/models/ThesisWorkflowDto'
 import type ThesisDocumentDto from '@/models/ThesisDocumentDto'
-import type DefenseWorkflowDto from '@/models/DefenseWorkflowDto'
+import DefenseWorkflowDto, { DefenseState } from '@/models/DefenseWorkflowDto'
 
 const httpClient = axios.create()
 httpClient.defaults.timeout = 50000
@@ -172,11 +172,18 @@ export default class RemoteServices {
     id: number,
     grade: number
   ): Promise<AxiosResponse<DefenseWorkflowDto>> {
-    return httpClient.post(`/defense/${id}/submit-grade`, { grade })
+    return httpClient.post(`/defense/${id}/submit-grade`, grade)
   }
 
   static async submitThesisToFenix(id: number): Promise<AxiosResponse<ThesisWorkflowDto>> {
     return httpClient.post(`/thesis/${id}/submit-fenix`)
+  }
+
+  static async defenseSetState(
+    id: number,
+    state: DefenseState
+  ): Promise<AxiosResponse<DefenseWorkflowDto>> {
+    return httpClient.post(`/defense/${id}/set-state`, state)
   }
 
   static async errorMessage(error: any): Promise<string> {
