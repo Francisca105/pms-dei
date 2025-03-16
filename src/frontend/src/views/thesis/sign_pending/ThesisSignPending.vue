@@ -55,11 +55,16 @@
         </p>
         <p>Confirme abaixo para prosseguir.</p>
       </v-card-text>
+      <v-file-input
+        :rules="rules"
+        accept="application/pdf"
+        label="Documento Assinado"
+      ></v-file-input>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="error" @click="closeSignModal">Cancelar</v-btn>
         <v-btn color="primary" @click="signDocument">Confirmar Assinatura</v-btn>
-        <v-btn color="secondary" @click="downloadDocument">Baixar Documento</v-btn>
+        <v-btn color="secondary" @click="downloadDocument">Transferir Documento</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -78,6 +83,14 @@ const search = ref('')
 const loading = ref(true)
 const signModalOpen = ref(false)
 const currentThesis = ref<ThesisDto | null>(null)
+
+const rules = [
+  (value) => {
+    return (
+      !value || !value.length || value[0].size < 100 * 1024 * 1024 || 'O arquivo deve ter menos de 100MB.'
+    )
+  }
+]
 
 const headers = [
   { title: 'ID', key: 'id', sortable: true, filterable: false },
