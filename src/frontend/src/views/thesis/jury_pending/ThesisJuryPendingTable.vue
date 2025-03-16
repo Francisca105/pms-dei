@@ -24,9 +24,28 @@
     class="text-left"
     no-data-text="Sem propostas a apresentar."
   >
+    <template v-slot:item.jury="{ item }">
+      <v-tooltip top>
+        <template v-slot:activator="{ on, attrs }">
+          <span v-bind="attrs" v-on="on">
+            {{ item.jury.map((professor) => professor.name).join(', ') }}
+          </span>
+        </template>
+        <ul>
+          <li v-for="professor in item.jury" :key="professor.id">
+            {{ professor.name }}
+          </li>
+        </ul>
+      </v-tooltip>
+    </template>
+
     <template v-slot:item.actions="{ item }">
-      <v-btn color="success" @click="approveProposal(item)">Aprovar</v-btn>
-      <v-btn color="error" @click="rejectProposal(item)">Rejeitar</v-btn>
+      <v-btn v-if="item.state !== 'Aprovado pelo SC'" color="success" @click="approveProposal(item)"
+        >Aprovar</v-btn
+      >
+      <v-btn v-if="item.state !== 'Rejeitado pelo SC'" color="error" @click="rejectProposal(item)"
+        >Rejeitar</v-btn
+      >
     </template>
   </v-data-table>
 </template>
@@ -97,8 +116,9 @@ async function approveProposal(proposal: ThesisWorkflowDto) {
   try {
     await RemoteService.approveThesisProposal(proposal.id)
     proposal.state = 'Aprovado pelo SC'
-    roleStore.currentRole = 'coordinator'
-    router.push(`/thesis/jury/president`)
+    // For testing:
+    // roleStore.currentRole = 'coordinator'
+    // router.push(`/thesis/jury/president`)
   } catch (error) {
     console.error('Error approving proposal:', error)
   }
