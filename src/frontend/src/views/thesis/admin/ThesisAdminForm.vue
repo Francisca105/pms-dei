@@ -7,8 +7,40 @@
         <p><strong>Nome do Estudante:</strong> {{ thesisDetails.student.name }}</p>
         <p><strong>Email do Estudante:</strong> {{ thesisDetails.student.email }}</p>
         <p><strong>Estado:</strong> {{ thesisDetails.state }}</p>
-        <p><strong>Documento Assinado:</strong> {{ thesisDetails.signedDocument.name }}</p>
-        <p><strong>Data de Upload:</strong> {{ thesisDetails.signedDocument.uploadDate }}</p>
+
+        <p>
+          <strong>Presidente:</strong>
+          {{
+            thesisDetails.president ? thesisDetails.president.name : 'Nenhum presidente definido'
+          }}
+        </p>
+
+        <p>
+          <strong>Documento Assinado:</strong>
+          {{
+            thesisDetails.signedDocument
+              ? thesisDetails.signedDocument.name
+              : 'Nenhum documento assinado'
+          }}
+        </p>
+
+        <p>
+          <strong>Data de Upload:</strong>
+          {{
+            thesisDetails.signedDocument
+              ? thesisDetails.signedDocument.uploadDate
+              : 'Nenhuma data disponível'
+          }}
+        </p>
+
+        <p>
+          <strong>Júri:</strong>
+          {{
+            thesisDetails.jury && thesisDetails.jury.length > 0
+              ? thesisDetails.jury.map((m) => m.name).join(', ')
+              : 'Nenhum membro do júri definido'
+          }}
+        </p>
       </v-card-text>
     </v-card>
 
@@ -33,13 +65,21 @@
 import { ref, onMounted } from 'vue'
 import RemoteService from '@/services/RemoteService'
 import { useRoute } from 'vue-router'
+import { ThesisState } from '@/models/ThesisWorkflowDto'
 
 const route = useRoute()
 const thesisId = route.params.id
 
 const thesisDetails = ref(null)
 const selectedState = ref(null)
-const states = ref(['SUBMITTED_FENIX', 'UNDER_REVIEW', 'SCHEDULED_DEFENSE', 'NOT_SCHEDULED'])
+const states = ref([
+  ThesisState.NOT_STARTED,
+  ThesisState.PROPOSAL_SUBMITTED,
+  ThesisState.APPROVED_SC,
+  ThesisState.PRESIDENT_ASSIGNED,
+  ThesisState.DOCUMENT_SIGNED,
+  ThesisState.SUBMITTED_FENIX
+])
 
 async function fetchThesisDetails() {
   try {
