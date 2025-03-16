@@ -66,7 +66,11 @@
 import type ThesisWorkflowDto from '@/models/ThesisWorkflowDto'
 import RemoteService from '@/services/RemoteService'
 import { reactive, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useRoleStore } from '@/stores/role'
 
+const roleStore = useRoleStore()
+const router = useRouter()
 const search = ref('')
 const loading = ref(true)
 const modalOpen = ref(false)
@@ -126,6 +130,10 @@ async function assignPresident() {
 
   try {
     await RemoteService.assignThesisPresident(currentProposal.value.id, selectedPresident.value)
+    
+    roleStore.currentRole = 'coordinator'
+    router.push(`/thesis/sign/pending`)
+
     closeModal()
     await getPendingProposals()
   } catch (error) {
