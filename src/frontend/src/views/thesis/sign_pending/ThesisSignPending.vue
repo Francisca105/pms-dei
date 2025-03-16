@@ -1,4 +1,3 @@
-<!-- TODO: Pdf submit -->
 <template>
   <v-row align="center">
     <v-col>

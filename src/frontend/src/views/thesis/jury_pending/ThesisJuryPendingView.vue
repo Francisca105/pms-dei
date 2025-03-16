@@ -1,6 +1,5 @@
 <template>
   <div v-if="roleStore.currentRole === 'admin'">
-    <!-- TODO: staff could see this but wouldnt be able to edit it -->
     <PendingTable />
   </div>
   <div v-else>

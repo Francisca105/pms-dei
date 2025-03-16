@@ -109,7 +109,6 @@ const headers = [
     sortable: false,
     filterable: false
   }
-  // TODO: maybe add another column with possible actions? (edit / delete)
 ]
 
 const toEditPerson = ref<PeopleDto | null>(null)
