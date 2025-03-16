@@ -68,6 +68,11 @@ const router = createRouter({
       component: () => import('@/views/thesis/submit_fenix/ThesisSubmitFenixView.vue')
     },
     {
+      path: '/defense',
+      name: 'defense',
+      component: () => import('@/views/defense/DefenseView.vue')
+    },
+    {
       path: '/defense/:id',
       component: () => import('@/views/defense/steps/DefenseStepsView.vue')
     },
