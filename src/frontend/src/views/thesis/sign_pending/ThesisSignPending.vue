@@ -42,7 +42,7 @@
     </template>
   </v-data-table>
 
-  <v-dialog v-model="signModalOpen" max-width="600">
+  <v-dialog v-if="currentThesis && currentThesis.student" v-model="signModalOpen" max-width="600">
     <v-card>
       <v-card-title>
         <span class="headline">Assinar Documento da Tese</span>
@@ -56,6 +56,7 @@
         <p>Confirme abaixo para prosseguir.</p>
       </v-card-text>
       <v-file-input
+        v-model="file"
         :rules="rules"
         accept="application/pdf"
         label="Documento Assinado"
@@ -83,11 +84,15 @@ const search = ref('')
 const loading = ref(true)
 const signModalOpen = ref(false)
 const currentThesis = ref<ThesisDto | null>(null)
+const file = ref<File | null>(null)
 
 const rules = [
   (value) => {
     return (
-      !value || !value.length || value[0].size < 100 * 1024 * 1024 || 'O arquivo deve ter menos de 100MB.'
+      !value ||
+      !value.length ||
+      value[0].size < 100 * 1024 * 1024 ||
+      'O arquivo deve ter menos de 100MB.'
     )
   }
 ]
@@ -143,17 +148,22 @@ function openSignModal(thesis: ThesisDto) {
 function closeSignModal() {
   signModalOpen.value = false
   currentThesis.value = null
+  file.value = null
 }
 
 async function signDocument() {
-  if (!currentThesis.value) return
+  if (!currentThesis.value || !file.value) return
 
   try {
-    await RemoteService.signThesisDocument(currentThesis.value.id, null)
-    roleStore.currentRole = 'staff'
-    router.push(`/thesis/fenix`)
+    const formData = new FormData()
+    formData.append('file', file.value)
+
+    await RemoteService.signThesisDocument(currentThesis.value.id, formData)
+    // For testing:
+    // roleStore.currentRole = 'staff'
+    // router.push(`/thesis/fenix`)
     closeSignModal()
-    getPendingTheses()
+    await getPendingTheses()
   } catch (error) {
     console.error('Error signing thesis document:', error)
   }
