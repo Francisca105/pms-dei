@@ -91,9 +91,6 @@ public class ThesisWorkflow {
         if (!getState().equals(ThesisState.APPROVED_SC)) {
             throw new DEIException(ErrorMessage.THESIS_PRESIDENT_INVALID_STATE);
         }
-        if (!getJury().contains(president)) {
-            throw new DEIException(ErrorMessage.THESIS_PRESIDENT_NOT_IN_JURY);
-        }
         setPresident(president);
         setState(ThesisState.PRESIDENT_ASSIGNED);
     }
